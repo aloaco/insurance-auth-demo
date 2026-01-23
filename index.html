@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,811 +9,819 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
   </style>
 </head>
+
 <body>
   <div id="root"></div>
   <script type="text/babel">
-const { useState, useEffect, useRef } = React;
+    const { useState, useEffect, useRef } = React;
 
-// Dummy data for auth records
-const initialAuthRecords = [
-  { id: 1, patientName: 'Sarah Mitchell', insurance: 'UnitedHealthcare', status: 'Approved', lastUpdated: '2026-01-02', procedure: 'MRI Lumbar Spine' },
-  { id: 2, patientName: 'James Rodriguez', insurance: 'Aetna', status: 'Pending', lastUpdated: '2026-01-01', procedure: 'CT Abdomen' },
-  { 
-    id: 3, 
-    patientName: 'Emily Chen', 
-    insurance: 'Blue Cross', 
-    status: 'Needs Peer-to-Peer', 
-    lastUpdated: '2025-12-30', 
-    procedure: 'Humira Injection',
-    peerToPeer: {
-      scheduledDate: '2026-01-05',
-      scheduledTime: '2:30 PM EST',
-      reviewerName: 'Dr. Michael Roberts',
-      reviewerSpecialty: 'Rheumatology',
-      phoneNumber: '1-800-555-0142',
-      caseNumber: 'P2P-2025-78432',
-      talkingPoints: [
-        'Patient has failed methotrexate therapy for 6+ months with documented side effects',
-        'Current disease activity score (DAS28) of 5.1 indicates high disease activity',
-        'Joint erosions visible on recent X-rays indicate progressive disease',
-        'Humira is FDA-approved first-line biologic for rheumatoid arthritis',
-        'Early biologic intervention shown to prevent irreversible joint damage',
-        'Patient has no contraindications to TNF-inhibitor therapy'
-      ],
-      clinicalNotes: 'Patient diagnosed with RA 2 years ago. Failed conventional DMARDs. Significant morning stiffness (>1 hour), elevated CRP and ESR.'
-    }
-  },
-  { 
-    id: 4, 
-    patientName: 'Robert Kim', 
-    insurance: 'Medicare', 
-    status: 'Denied', 
-    lastUpdated: '2025-12-28', 
-    procedure: 'Spinal Fusion Surgery',
-    denial: {
-      denialCode: 'MED-2025-11234',
-      denialReason: 'Documentation does not demonstrate failure of conservative treatment for minimum 6-week period as required by LCD L35075.',
-      appealDeadline: '2026-01-28',
-      requiredForResubmission: [
-        'Physical therapy progress notes showing 6+ weeks of treatment',
-        'Documentation of failed oral medication trial (NSAIDs, muscle relaxants)',
-        'Updated functional assessment scores (ODI or similar)',
-        'Confirmation of epidural steroid injection trial'
-      ],
-      phoneNumber: '1-800-MEDICARE',
-      appealFaxNumber: '1-800-555-0199',
-      disputeScript: [
-        'Reference case number MED-2025-11234 for spinal fusion prior authorization',
-        'Patient has completed 8 weeks of physical therapy with documented lack of improvement',
-        'Request expedited review based on progressive neurological symptoms',
-        'Ask for specific documentation requirements for appeal submission'
-      ]
-    }
-  }
-];
+    // Dummy data for auth records
+    const initialAuthRecords = [
+      { id: 1, patientName: 'Sarah Mitchell', insurance: 'UnitedHealthcare', status: 'Approved', lastUpdated: '2026-01-02', procedure: 'MRI Lumbar Spine' },
+      { id: 2, patientName: 'James Rodriguez', insurance: 'Aetna', status: 'Pending', lastUpdated: '2026-01-01', procedure: 'CT Abdomen' },
+      {
+        id: 3,
+        patientName: 'Emily Chen',
+        insurance: 'Blue Cross',
+        status: 'Needs Peer-to-Peer',
+        lastUpdated: '2025-12-30',
+        procedure: 'Humira Injection',
+        peerToPeer: {
+          scheduledDate: '2026-01-05',
+          scheduledTime: '2:30 PM EST',
+          reviewerName: 'Dr. Michael Roberts',
+          reviewerSpecialty: 'Rheumatology',
+          phoneNumber: '1-800-555-5555',
+          caseNumber: 'P2P-2025-78432',
+          talkingPoints: [
+            'Patient has failed methotrexate therapy for 6+ months with documented side effects',
+            'Current disease activity score (DAS28) of 5.1 indicates high disease activity',
+            'Joint erosions visible on recent X-rays indicate progressive disease',
+            'Humira is FDA-approved for moderate-to-severe RA after inadequate response to DMARDs.',
+            'Early biologic intervention shown to prevent irreversible joint damage',
+            'Patient has no contraindications to TNF-inhibitor therapy'
+          ],
+          clinicalNotes: 'Patient diagnosed with RA 2 years ago. Failed conventional DMARDs. Significant morning stiffness (>1 hour), elevated CRP and ESR.'
+        }
+      },
+      {
+        id: 4,
+        patientName: 'Robert Kim',
+        insurance: 'Medicare',
+        status: 'Denied',
+        lastUpdated: '2025-12-28',
+        procedure: 'Spinal Fusion Surgery',
+        denial: {
+          denialCode: 'MED-2025-11234',
+          denialReason: 'Documentation does not demonstrate failure of conservative treatment for minimum 6-week period as required by LCD 37848.',
+          appealDeadline: '2026-01-28',
+          requiredForResubmission: [
+            'Physical therapy progress notes showing 6+ weeks of treatment',
+            'Documentation of failed oral medication trial (NSAIDs, muscle relaxants)',
+            'Updated functional assessment scores (ODI or similar)',
+            'Confirmation of epidural steroid injection trial'
+          ],
+          phoneNumber: '1-800-MEDICARE',
+          appealFaxNumber: '1-800-555-5555',
+          disputeScript: [
+            'Reference case number MED-2025-11234 for spinal fusion prior authorization',
+            'Patient has completed 8 weeks of physical therapy with documented lack of improvement',
+            'Request expedited review based on progressive neurological symptoms',
+            'Ask for specific documentation requirements for appeal submission'
+          ]
+        }
+      }
+    ];
 
-const documentQuestions = [
-  { field: 'prior_treatment', question: 'What conservative treatments has the patient tried? Please include duration and outcomes.' },
-  { field: 'diagnosis_duration', question: 'How long has the patient had this diagnosis?' },
-  { field: 'procedure_details', question: 'Please specify the exact procedure, including approach, dosage if applicable, and frequency.' }
-];
+    const documentQuestions = [
+      { field: 'prior_treatment', question: 'What conservative treatments has the patient tried? Please include duration and outcomes.' },
+      { field: 'diagnosis_duration', question: 'How long has the patient had this diagnosis?' },
+      { field: 'procedure_details', question: 'Please specify the exact procedure, including approach, dosage if applicable, and frequency.' }
+    ];
 
-const StatusBadge = ({ status }) => {
-  const config = {
-    Approved: { color: '#22c55e', label: 'Approved' },
-    Pending: { color: '#eab308', label: 'Pending' },
-    'Needs Peer-to-Peer': { color: '#7c3aed', label: 'Peer-to-Peer' },
-    Denied: { color: '#dc2626', label: 'Denied' }
-  };
-  const { color, label } = config[status] || config.Pending;
-  
-  return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px',
-      fontSize: '14px',
-      fontWeight: '500',
-      color: '#1a1a1a'
-    }}>
-      <span style={{
-        width: '8px',
-        height: '8px',
-        borderRadius: '50%',
-        backgroundColor: color
-      }} />
-      {label}
-    </span>
-  );
-};
+    const StatusBadge = ({ status }) => {
+      const config = {
+        Approved: { color: '#22c55e', label: 'Approved' },
+        Pending: { color: '#eab308', label: 'Pending' },
+        'Needs Peer-to-Peer': { color: '#7c3aed', label: 'Peer-to-Peer' },
+        Denied: { color: '#dc2626', label: 'Denied' }
+      };
+      const { color, label } = config[status] || config.Pending;
 
-const LoadingSpinner = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-    <div style={{
-      width: '40px',
-      height: '40px',
-      border: '2px solid #e5e5e5',
-      borderTop: '2px solid #1a1a1a',
-      borderRadius: '50%',
-      animation: 'spin 1s linear infinite'
-    }} />
-    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-  </div>
-);
+      return (
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '14px',
+          fontWeight: '500',
+          color: '#1a1a1a'
+        }}>
+          <span style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: color
+          }} />
+          {label}
+        </span>
+      );
+    };
 
-const ChatMessage = ({ message, isSystem }) => (
-  <div style={{
-    display: 'flex',
-    justifyContent: isSystem ? 'flex-start' : 'flex-end',
-    marginBottom: '16px',
-    animation: 'fadeIn 0.3s ease'
-  }}>
-    <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-    <div style={{
-      maxWidth: '85%',
-      padding: '14px 18px',
-      borderRadius: isSystem ? '4px 20px 20px 20px' : '20px 20px 4px 20px',
-      backgroundColor: isSystem ? '#f5f5f5' : '#1a1a1a',
-      color: isSystem ? '#1a1a1a' : 'white',
-      fontSize: '15px',
-      lineHeight: '1.5'
-    }}>
-      {message}
-    </div>
-  </div>
-);
+    const LoadingSpinner = () => (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+        <div style={{
+          width: '40px',
+          height: '40px',
+          border: '2px solid #e5e5e5',
+          borderTop: '2px solid #1a1a1a',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
 
-const TypingIndicator = () => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginBottom: '16px'
-  }}>
-    <div style={{
-      padding: '14px 18px',
-      borderRadius: '4px 20px 20px 20px',
-      backgroundColor: '#f5f5f5',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '5px'
-    }}>
-      <style>{`
+    const ChatMessage = ({ message, isSystem }) => (
+      <div style={{
+        display: 'flex',
+        justifyContent: isSystem ? 'flex-start' : 'flex-end',
+        marginBottom: '16px',
+        animation: 'fadeIn 0.3s ease'
+      }}>
+        <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+        <div style={{
+          maxWidth: '85%',
+          padding: '14px 18px',
+          borderRadius: isSystem ? '4px 20px 20px 20px' : '20px 20px 4px 20px',
+          backgroundColor: isSystem ? '#f5f5f5' : '#1a1a1a',
+          color: isSystem ? '#1a1a1a' : 'white',
+          fontSize: '15px',
+          lineHeight: '1.5'
+        }}>
+          {message}
+        </div>
+      </div>
+    );
+
+    const TypingIndicator = () => (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'flex-start',
+        marginBottom: '16px'
+      }}>
+        <div style={{
+          padding: '14px 18px',
+          borderRadius: '4px 20px 20px 20px',
+          backgroundColor: '#f5f5f5',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px'
+        }}>
+          <style>{`
         @keyframes bounce {
           0%, 60%, 100% { transform: translateY(0); }
           30% { transform: translateY(-4px); }
         }
       `}</style>
-      {[0, 1, 2].map(i => (
-        <div key={i} style={{
-          width: '7px',
-          height: '7px',
-          borderRadius: '50%',
-          backgroundColor: '#1a1a1a',
-          animation: 'bounce 1.4s ease-in-out infinite',
-          animationDelay: `${i * 0.2}s`
-        }} />
-      ))}
-    </div>
-  </div>
-);
-
-const DocumentSection = ({ title, content, placeholder, isEditable, isFilled, isHighlighted, isCurrentField }) => {
-  return (
-    <div style={{
-      marginBottom: '20px',
-      padding: '16px 20px',
-      borderRadius: '12px',
-      backgroundColor: isCurrentField ? '#f3e8ff' : isFilled ? '#f0fdf4' : isEditable ? '#fef2f2' : '#fafafa',
-      border: isCurrentField ? '2px solid #7c3aed' : isFilled ? '2px solid #22c55e' : isEditable ? '2px solid #fca5a5' : '1px solid #e5e5e5',
-      transition: 'all 0.3s ease'
-    }}>
-      <div style={{
-        fontSize: '11px',
-        fontWeight: '600',
-        color: isCurrentField ? '#7c3aed' : isFilled ? '#166534' : isEditable ? '#dc2626' : '#666',
-        marginBottom: '8px',
-        letterSpacing: '0.5px',
-        textTransform: 'uppercase',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        {title}
-        {isFilled && <span style={{ fontSize: '10px', fontWeight: '500', color: '#22c55e' }}>✓ Complete</span>}
-        {isCurrentField && !isFilled && <span style={{ fontSize: '10px', backgroundColor: '#7c3aed', color: 'white', padding: '2px 8px', borderRadius: '100px' }}>Current</span>}
-        {isEditable && !isFilled && !isCurrentField && <span style={{ fontSize: '10px', fontWeight: '500', color: '#dc2626' }}>Required</span>}
-      </div>
-      <div style={{
-        fontSize: '14px',
-        lineHeight: '1.6',
-        color: isFilled ? '#1a1a1a' : content ? '#1a1a1a' : '#999',
-        whiteSpace: 'pre-wrap'
-      }}>
-        {content || placeholder || 'No content'}
-      </div>
-    </div>
-  );
-};
-
-function PriorAuthDemo() {
-  const [currentView, setCurrentView] = useState('dashboard');
-  const [authRecords, setAuthRecords] = useState(initialAuthRecords);
-  const [selectedRecord, setSelectedRecord] = useState(null);
-  
-  const [step, setStep] = useState(1);
-  const [patientName, setPatientName] = useState('');
-  const [selectedInsurance, setSelectedInsurance] = useState('');
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [chatHistory, setChatHistory] = useState([]);
-  const [userInput, setUserInput] = useState('');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [documentData, setDocumentData] = useState({
-    prior_treatment: null,
-    diagnosis_duration: null,
-    procedure_details: null
-  });
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [highlightedField, setHighlightedField] = useState(null);
-  const [expandedSection, setExpandedSection] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [analysisStage, setAnalysisStage] = useState('');
-  
-  const chatEndRef = useRef(null);
-  const docScrollRef = useRef(null);
-  const fieldRefs = {
-    prior_treatment: useRef(null),
-    diagnosis_duration: useRef(null),
-    procedure_details: useRef(null)
-  };
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatHistory, isTyping]);
-
-  useEffect(() => {
-    const currentField = getCurrentField();
-    if (currentField && fieldRefs[currentField]?.current && docScrollRef.current) {
-      const container = docScrollRef.current;
-      const element = fieldRefs[currentField].current;
-      const scrollTop = element.offsetTop - container.offsetTop - 100;
-      container.scrollTo({ top: scrollTop, behavior: 'smooth' });
-    }
-  }, [currentQuestionIndex]);
-
-  const simulateFileUpload = (fileName = 'clinical_notes.pdf', fileSize = '2.4 MB') => {
-    setUploadProgress('uploading');
-    setTimeout(() => {
-      setUploadProgress('processing');
-      setTimeout(() => {
-        setUploadProgress(null);
-        setUploadedFile({ name: fileName, size: fileSize });
-      }, 2000);
-    }, 1500);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      simulateFileUpload(file.name, `${(file.size / 1024 / 1024).toFixed(1)} MB`);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleAnalysis = () => {
-    setStep(3);
-    setIsAnalyzing(true);
-    const stages = [
-      'Extracting clinical data...',
-      `Reviewing ${selectedInsurance} requirements...`,
-      'Identifying documentation gaps...',
-      'Preparing authorization checklist...'
-    ];
-    let stageIndex = 0;
-    setAnalysisStage(stages[0]);
-    const stageInterval = setInterval(() => {
-      stageIndex++;
-      if (stageIndex < stages.length) {
-        setAnalysisStage(stages[stageIndex]);
-      }
-    }, 1500);
-    setTimeout(() => {
-      clearInterval(stageInterval);
-      setIsAnalyzing(false);
-      setAnalysisStage('');
-      setChatHistory([{ isSystem: true, message: documentQuestions[0].question }]);
-    }, 6500);
-  };
-
-  const handleChatSubmit = () => {
-    if (!userInput.trim() || isTyping) return;
-    const userMessage = userInput.trim();
-    setChatHistory(prev => [...prev, { isSystem: false, message: userMessage }]);
-    setUserInput('');
-    setIsTyping(true);
-    const typingDelay = 1000 + Math.random() * 1000;
-    setTimeout(() => {
-      const currentField = documentQuestions[currentQuestionIndex].field;
-      setDocumentData(prev => ({ ...prev, [currentField]: userMessage }));
-      setHighlightedField(currentField);
-      setTimeout(() => setHighlightedField(null), 2000);
-      setIsTyping(false);
-      if (currentQuestionIndex < documentQuestions.length - 1) {
-        setChatHistory(prev => [...prev, {
-          isSystem: true,
-          message: `Got it. ${documentQuestions[currentQuestionIndex + 1].question}`
-        }]);
-        setCurrentQuestionIndex(prev => prev + 1);
-      } else {
-        setChatHistory(prev => [...prev, {
-          isSystem: true,
-          message: "All required fields are now complete. Your documentation is ready for review."
-        }]);
-      }
-    }, typingDelay);
-  };
-
-  const allIssuesResolved = () => Object.values(documentData).every(v => v !== null);
-  
-  const getCurrentField = () => {
-    if (currentQuestionIndex < documentQuestions.length) {
-      return documentQuestions[currentQuestionIndex].field;
-    }
-    return null;
-  };
-
-  const generatedOutputs = {
-    summary: `Prior Authorization Request Summary\n\nPatient: ${patientName || 'John Smith'}\nInsurance: ${selectedInsurance}\nProcedure: Lumbar Epidural Steroid Injection\nDate of Service: 01/02/2026\nProvider: Dr. Sarah Chen, MD\n\nClinical Indication: Lumbar radiculopathy secondary to L4-L5 disc herniation with documented failure of conservative management.`,
-    cptCodes: [
-      { code: '62322', description: 'Injection(s), lumbar epidural, diagnostic or therapeutic' },
-      { code: '77003', description: 'Fluoroscopic guidance and localization' },
-      { code: '99214', description: 'Office visit, established patient' }
-    ],
-    icdCodes: [
-      { code: 'M54.16', description: 'Radiculopathy, lumbar region' },
-      { code: 'M51.16', description: 'Intervertebral disc disorders with radiculopathy, lumbar region' },
-      { code: 'M47.816', description: 'Spondylosis without myelopathy, lumbar region' }
-    ],
-    narrative: `Medical Necessity Statement\n\nThis prior authorization is submitted for ${patientName || 'the patient'} who requires a lumbar epidural steroid injection based on documented clinical findings.\n\nThe patient has demonstrated inadequate response to conservative management including ${documentData.prior_treatment || 'physical therapy and pharmacological interventions'}. Diagnosis duration: ${documentData.diagnosis_duration || 'documented in clinical notes'}.\n\nCurrent symptoms significantly impact daily functioning and quality of life. The requested intervention (${documentData.procedure_details || 'epidural steroid injection'}) is supported by peer-reviewed literature and aligns with current clinical practice guidelines.`,
-    talkingPoints: [
-      'Patient has documented failure of conservative treatment over adequate duration',
-      'Imaging confirms structural pathology correlating with clinical symptoms',
-      'Procedure is medically necessary and appropriate for diagnosis',
-      'Treatment aligns with current clinical guidelines and LCD requirements',
-      'No contraindications to proposed intervention',
-      'Expected outcome: Pain reduction and functional improvement'
-    ]
-  };
-
-  const handleSubmit = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      const newRecord = {
-        id: authRecords.length + 1,
-        patientName: patientName || 'John Smith',
-        insurance: selectedInsurance,
-        status: 'Pending',
-        lastUpdated: new Date().toISOString().split('T')[0],
-        procedure: 'Lumbar Epidural Steroid Injection'
-      };
-      setAuthRecords(prev => [newRecord, ...prev]);
-      setIsSubmitting(false);
-      setCurrentView('dashboard');
-      setStep(1);
-      setPatientName('');
-      setSelectedInsurance('');
-      setUploadedFile(null);
-      setChatHistory([]);
-      setCurrentQuestionIndex(0);
-      setDocumentData({ prior_treatment: null, diagnosis_duration: null, procedure_details: null });
-    }, 2500);
-  };
-
-  const startNewAuth = () => {
-    setCurrentView('newAuth');
-    setStep(1);
-    setPatientName('');
-    setSelectedInsurance('');
-    setUploadedFile(null);
-    setChatHistory([]);
-    setCurrentQuestionIndex(0);
-    setDocumentData({ prior_treatment: null, diagnosis_duration: null, procedure_details: null });
-  };
-
-  if (currentView === 'dashboard') {
-    return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');`}</style>
-        <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '20px 32px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <button onClick={startNewAuth} style={{ backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '18px', lineHeight: 1 }}>+</span> New Authorization
-          </button>
-        </header>
-        <main style={{ padding: '40px 32px', maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ marginBottom: '40px' }}>
-            <h1 style={{ margin: '0 0 8px 0', fontSize: '36px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Prior Authorizations</h1>
-            <p style={{ margin: 0, color: '#666', fontSize: '16px' }}>Manage and track your authorization requests</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '40px' }}>
-            {[
-              { label: 'Total Requests', value: authRecords.length },
-              { label: 'Approved', value: authRecords.filter(r => r.status === 'Approved').length },
-              { label: 'Pending', value: authRecords.filter(r => r.status === 'Pending').length },
-              { label: 'Action Needed', value: authRecords.filter(r => r.status === 'Needs Peer-to-Peer' || r.status === 'Denied').length }
-            ].map((stat, i) => (
-              <div key={i} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e5e5e5' }}>
-                <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#666' }}>{stat.label}</p>
-                <p style={{ margin: 0, fontSize: '32px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>{stat.value}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid #e5e5e5' }}>
-              <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#1a1a1a' }}>Recent Requests</h2>
-            </div>
-            <div>
-              {authRecords.map((record, i) => {
-                const hasDetails = (record.status === 'Denied' && record.denial) || (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
-                return (
-                  <div key={record.id} onClick={() => hasDetails && setSelectedRecord(record)} style={{ padding: '20px 24px', borderBottom: i < authRecords.length - 1 ? '1px solid #f0f0f0' : 'none', display: 'grid', gridTemplateColumns: '1fr 1.2fr 140px 24px', alignItems: 'center', gap: '16px', cursor: hasDetails ? 'pointer' : 'default', transition: 'background-color 0.15s ease', backgroundColor: 'white' }} onMouseEnter={(e) => hasDetails && (e.currentTarget.style.backgroundColor = '#fafafa')} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: '500', color: '#1a1a1a', fontSize: '15px' }}>{record.patientName}</p>
-                      <p style={{ margin: '2px 0 0 0', color: '#999', fontSize: '13px' }}>{record.lastUpdated}</p>
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, color: '#1a1a1a', fontSize: '14px' }}>{record.procedure}</p>
-                      <p style={{ margin: '2px 0 0 0', color: '#999', fontSize: '13px' }}>{record.insurance}</p>
-                    </div>
-                    <div><StatusBadge status={record.status} /></div>
-                    <div style={{ color: '#ccc', fontSize: '18px', textAlign: 'right' }}>{hasDetails ? '→' : ''}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </main>
-
-        {selectedRecord && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-            <div style={{ backgroundColor: 'white', borderRadius: '20px', width: '100%', maxWidth: '560px', maxHeight: '90vh', overflow: 'auto' }}>
-              <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>{selectedRecord.patientName}</h2>
-                  <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedRecord.procedure} • {selectedRecord.insurance}</p>
-                </div>
-                <button onClick={() => setSelectedRecord(null)} style={{ backgroundColor: '#f5f5f5', border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
-              </div>
-
-              {selectedRecord.status === 'Denied' && selectedRecord.denial && (
-                <div>
-                  <div style={{ backgroundColor: '#fef2f2', padding: '20px 24px', borderBottom: '1px solid #fecaca' }}>
-                    <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: '#dc2626', fontSize: '14px' }}>Denial Code: {selectedRecord.denial.denialCode}</p>
-                    <p style={{ margin: 0, color: '#991b1b', fontSize: '15px', lineHeight: '1.6' }}>{selectedRecord.denial.denialReason}</p>
-                    <p style={{ margin: '12px 0 0 0', color: '#dc2626', fontSize: '14px', fontWeight: '500' }}>Appeal Deadline: {selectedRecord.denial.appealDeadline}</p>
-                  </div>
-                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5' }}>
-                    <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Required for Resubmission</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {selectedRecord.denial.requiredForResubmission.map((item, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                          <span style={{ minWidth: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#f5f5f5', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600' }}>{i + 1}</span>
-                          <span style={{ fontSize: '15px', color: '#1a1a1a', lineHeight: '1.5' }}>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ padding: '24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                      <h3 style={{ margin: 0, fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dispute Call Script</h3>
-                      <a href={`tel:${selectedRecord.denial.phoneNumber}`} style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '10px 20px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '14px' }}>{selectedRecord.denial.phoneNumber}</a>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {selectedRecord.denial.disputeScript.map((point, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
-                          <span style={{ color: '#1a1a1a', fontWeight: '600', fontSize: '14px' }}>{i + 1}.</span>
-                          <span style={{ fontSize: '14px', color: '#1a1a1a', lineHeight: '1.5' }}>{point}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <p style={{ margin: '16px 0 0 0', fontSize: '13px', color: '#666' }}>Fax additional documentation: {selectedRecord.denial.appealFaxNumber}</p>
-                  </div>
-                  <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
-                    <button style={{ flex: 1, padding: '14px 20px', backgroundColor: '#1a1a1a', color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Start Resubmission</button>
-                    <button style={{ padding: '14px 20px', backgroundColor: 'white', color: '#1a1a1a', border: '1px solid #e5e5e5', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Download</button>
-                  </div>
-                </div>
-              )}
-
-              {selectedRecord.status === 'Needs Peer-to-Peer' && selectedRecord.peerToPeer && (
-                <div>
-                  <div style={{ backgroundColor: '#f3e8ff', padding: '24px', borderBottom: '1px solid #ddd6fe' }}>
-                    <p style={{ margin: '0 0 4px 0', fontWeight: '600', color: '#7c3aed', fontSize: '13px' }}>Peer-to-Peer Review Scheduled</p>
-                    <p style={{ margin: '0 0 8px 0', color: '#5b21b6', fontSize: '22px', fontWeight: '600', fontFamily: "'Playfair Display', serif" }}>{selectedRecord.peerToPeer.scheduledDate} at {selectedRecord.peerToPeer.scheduledTime}</p>
-                    <p style={{ margin: 0, color: '#7c3aed', fontSize: '15px' }}>{selectedRecord.peerToPeer.reviewerName}, {selectedRecord.peerToPeer.reviewerSpecialty}</p>
-                    <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '13px' }}>Case #{selectedRecord.peerToPeer.caseNumber}</p>
-                  </div>
-                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5' }}>
-                    <h3 style={{ margin: '0 0 12px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Summary</h3>
-                    <p style={{ margin: 0, fontSize: '15px', color: '#1a1a1a', lineHeight: '1.6' }}>{selectedRecord.peerToPeer.clinicalNotes}</p>
-                  </div>
-                  <div style={{ padding: '24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5' }}>
-                    <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Talking Points</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {selectedRecord.peerToPeer.talkingPoints.map((point, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
-                          <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600' }}>✓</span>
-                          <span style={{ fontSize: '14px', color: '#1a1a1a', lineHeight: '1.5' }}>{point}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                      <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: '#1a1a1a' }}>Join Peer-to-Peer Call</p>
-                      <p style={{ margin: 0, fontSize: '13px', color: '#666' }}>Dial-in for scheduled review</p>
-                    </div>
-                    <a href={`tel:${selectedRecord.peerToPeer.phoneNumber}`} style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>{selectedRecord.peerToPeer.phoneNumber}</a>
-                  </div>
-                  <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
-                    <button style={{ flex: 1, padding: '14px 20px', backgroundColor: '#1a1a1a', color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Add to Calendar</button>
-                    <button style={{ padding: '14px 20px', backgroundColor: 'white', color: '#1a1a1a', border: '1px solid #e5e5e5', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Print</button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              backgroundColor: '#1a1a1a',
+              animation: 'bounce 1.4s ease-in-out infinite',
+              animationDelay: `${i * 0.2}s`
+            }} />
+          ))}
+        </div>
       </div>
     );
-  }
 
-  return (
-    <div style={{ height: step === 3 && !allIssuesResolved() ? '100vh' : 'auto', minHeight: step === 3 && !allIssuesResolved() ? 'auto' : '100vh', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'auto', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", display: 'flex', flexDirection: 'column' }}>
-      <style>{`
+    const DocumentSection = ({ title, content, placeholder, isEditable, isFilled, isHighlighted, isCurrentField }) => {
+      return (
+        <div style={{
+          marginBottom: '20px',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          backgroundColor: isCurrentField ? '#f3e8ff' : isFilled ? '#f0fdf4' : isEditable ? '#fef2f2' : '#fafafa',
+          border: isCurrentField ? '2px solid #7c3aed' : isFilled ? '2px solid #22c55e' : isEditable ? '2px solid #fca5a5' : '1px solid #e5e5e5',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{
+            fontSize: '11px',
+            fontWeight: '600',
+            color: isCurrentField ? '#7c3aed' : isFilled ? '#166534' : isEditable ? '#dc2626' : '#666',
+            marginBottom: '8px',
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            {title}
+            {isFilled && <span style={{ fontSize: '10px', fontWeight: '500', color: '#22c55e' }}>✓ Complete</span>}
+            {isCurrentField && !isFilled && <span style={{ fontSize: '10px', backgroundColor: '#7c3aed', color: 'white', padding: '2px 8px', borderRadius: '100px' }}>Current</span>}
+            {isEditable && !isFilled && !isCurrentField && <span style={{ fontSize: '10px', fontWeight: '500', color: '#dc2626' }}>Required</span>}
+          </div>
+          <div style={{
+            fontSize: '14px',
+            lineHeight: '1.6',
+            color: isFilled ? '#1a1a1a' : content ? '#1a1a1a' : '#999',
+            whiteSpace: 'pre-wrap'
+          }}>
+            {content || placeholder || 'No content'}
+          </div>
+        </div>
+      );
+    };
+
+    function PriorAuthDemo() {
+      const [currentView, setCurrentView] = useState('dashboard');
+      const [authRecords, setAuthRecords] = useState(initialAuthRecords);
+      const [selectedRecord, setSelectedRecord] = useState(null);
+
+      const [step, setStep] = useState(1);
+      const [patientName, setPatientName] = useState('');
+      const [selectedInsurance, setSelectedInsurance] = useState('');
+      const [uploadedFile, setUploadedFile] = useState(null);
+      const [chatHistory, setChatHistory] = useState([]);
+      const [userInput, setUserInput] = useState('');
+      const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+      const [documentData, setDocumentData] = useState({
+        prior_treatment: null,
+        diagnosis_duration: null,
+        procedure_details: null
+      });
+      const [isAnalyzing, setIsAnalyzing] = useState(false);
+      const [highlightedField, setHighlightedField] = useState(null);
+      const [expandedSection, setExpandedSection] = useState(null);
+      const [isDragging, setIsDragging] = useState(false);
+      const [uploadProgress, setUploadProgress] = useState(null);
+      const [isTyping, setIsTyping] = useState(false);
+      const [isSubmitting, setIsSubmitting] = useState(false);
+      const [analysisStage, setAnalysisStage] = useState('');
+
+      const chatEndRef = useRef(null);
+      const docScrollRef = useRef(null);
+      const fieldRefs = {
+        prior_treatment: useRef(null),
+        diagnosis_duration: useRef(null),
+        procedure_details: useRef(null)
+      };
+
+      useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, [chatHistory, isTyping]);
+
+      useEffect(() => {
+        const currentField = getCurrentField();
+        if (currentField && fieldRefs[currentField]?.current && docScrollRef.current) {
+          const container = docScrollRef.current;
+          const element = fieldRefs[currentField].current;
+          const scrollTop = element.offsetTop - container.offsetTop - 100;
+          container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+        }
+      }, [currentQuestionIndex]);
+
+      const simulateFileUpload = (fileName = 'clinical_notes.pdf', fileSize = '2.4 MB') => {
+        setUploadProgress('uploading');
+        setTimeout(() => {
+          setUploadProgress('processing');
+          setTimeout(() => {
+            setUploadProgress(null);
+            setUploadedFile({ name: fileName, size: fileSize });
+          }, 2000);
+        }, 1500);
+      };
+
+      const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          simulateFileUpload(file.name, `${(file.size / 1024 / 1024).toFixed(1)} MB`);
+        }
+      };
+
+      const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      };
+
+      const handleDragLeave = () => {
+        setIsDragging(false);
+      };
+
+      const handleAnalysis = () => {
+        setStep(3);
+        setIsAnalyzing(true);
+        const stages = [
+          'Extracting clinical data...',
+          `Reviewing ${selectedInsurance} requirements...`,
+          'Identifying documentation gaps...',
+          'Preparing authorization checklist...'
+        ];
+        let stageIndex = 0;
+        setAnalysisStage(stages[0]);
+        const stageInterval = setInterval(() => {
+          stageIndex++;
+          if (stageIndex < stages.length) {
+            setAnalysisStage(stages[stageIndex]);
+          }
+        }, 1500);
+        setTimeout(() => {
+          clearInterval(stageInterval);
+          setIsAnalyzing(false);
+          setAnalysisStage('');
+          setChatHistory([{ isSystem: true, message: documentQuestions[0].question }]);
+        }, 6500);
+      };
+
+      const handleChatSubmit = () => {
+        if (!userInput.trim() || isTyping) return;
+        const userMessage = userInput.trim();
+        setChatHistory(prev => [...prev, { isSystem: false, message: userMessage }]);
+        setUserInput('');
+        setIsTyping(true);
+        const typingDelay = 1000 + Math.random() * 1000;
+        setTimeout(() => {
+          const currentField = documentQuestions[currentQuestionIndex].field;
+          setDocumentData(prev => ({ ...prev, [currentField]: userMessage }));
+          setHighlightedField(currentField);
+          setTimeout(() => setHighlightedField(null), 2000);
+          setIsTyping(false);
+          if (currentQuestionIndex < documentQuestions.length - 1) {
+            setChatHistory(prev => [...prev, {
+              isSystem: true,
+              message: `Got it. ${documentQuestions[currentQuestionIndex + 1].question}`
+            }]);
+            setCurrentQuestionIndex(prev => prev + 1);
+          } else {
+            setChatHistory(prev => [...prev, {
+              isSystem: true,
+              message: "All required fields are now complete. Your documentation is ready for review."
+            }]);
+          }
+        }, typingDelay);
+      };
+
+      const allIssuesResolved = () => Object.values(documentData).every(v => v !== null);
+
+      const getCurrentField = () => {
+        if (currentQuestionIndex < documentQuestions.length) {
+          return documentQuestions[currentQuestionIndex].field;
+        }
+        return null;
+      };
+
+      const generatedOutputs = {
+        summary: `Prior Authorization Request Summary\n\nPatient: ${patientName || 'John Smith'}\nInsurance: ${selectedInsurance}\nProcedure: Lumbar Epidural Steroid Injection\nDate of Service: 01/02/2026\nProvider: Dr. Sarah Chen, MD\n\nClinical Indication: Lumbar radiculopathy secondary to L4-L5 disc herniation with documented failure of conservative management.`,
+        cptCodes: [
+          { code: '62322', description: 'Injection(s), lumbar epidural, diagnostic or therapeutic' },
+          { code: '77003', description: 'Fluoroscopic guidance and localization' },
+          { code: '99214', description: 'Office visit, established patient' }
+        ],
+        icdCodes: [
+          { code: 'M54.16', description: 'Radiculopathy, lumbar region' },
+          { code: 'M51.16', description: 'Intervertebral disc disorders with radiculopathy, lumbar region' },
+          { code: 'M47.816', description: 'Spondylosis without myelopathy, lumbar region' }
+        ],
+        narrative: `Medical Necessity Statement\n\nThis prior authorization is submitted for ${patientName || 'the patient'} who requires a lumbar epidural steroid injection based on documented clinical findings.\n\nThe patient has demonstrated inadequate response to conservative management including ${documentData.prior_treatment || 'physical therapy and pharmacological interventions'}. Diagnosis duration: ${documentData.diagnosis_duration || 'documented in clinical notes'}.\n\nCurrent symptoms significantly impact daily functioning and quality of life. The requested intervention (${documentData.procedure_details || 'epidural steroid injection'}) is supported by peer-reviewed literature and aligns with current clinical practice guidelines.`,
+        talkingPoints: [
+          'Patient has documented failure of conservative treatment over adequate duration',
+          'Imaging confirms structural pathology correlating with clinical symptoms',
+          'Procedure is medically necessary and appropriate for diagnosis',
+          'Treatment aligns with current clinical guidelines and LCD requirements',
+          'No contraindications to proposed intervention',
+          'Expected outcome: Pain reduction and functional improvement'
+        ]
+      };
+
+      const handleSubmit = () => {
+        setIsSubmitting(true);
+        setTimeout(() => {
+          const newRecord = {
+            id: authRecords.length + 1,
+            patientName: patientName || 'John Smith',
+            insurance: selectedInsurance,
+            status: 'Pending',
+            lastUpdated: new Date().toISOString().split('T')[0],
+            procedure: 'Lumbar Epidural Steroid Injection'
+          };
+          setAuthRecords(prev => [newRecord, ...prev]);
+          setIsSubmitting(false);
+          setCurrentView('dashboard');
+          setStep(1);
+          setPatientName('');
+          setSelectedInsurance('');
+          setUploadedFile(null);
+          setChatHistory([]);
+          setCurrentQuestionIndex(0);
+          setDocumentData({ prior_treatment: null, diagnosis_duration: null, procedure_details: null });
+        }, 2500);
+      };
+
+      const startNewAuth = () => {
+        setCurrentView('newAuth');
+        setStep(1);
+        setPatientName('');
+        setSelectedInsurance('');
+        setUploadedFile(null);
+        setChatHistory([]);
+        setCurrentQuestionIndex(0);
+        setDocumentData({ prior_treatment: null, diagnosis_duration: null, procedure_details: null });
+      };
+
+      if (currentView === 'dashboard') {
+        return (
+          <div style={{ minHeight: '100vh', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+            <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');`}</style>
+            <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '20px 32px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <button onClick={startNewAuth} style={{ backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px', lineHeight: 1 }}>+</span> New Authorization
+              </button>
+            </header>
+            <main style={{ padding: '40px 32px', maxWidth: '1200px', margin: '0 auto' }}>
+              <div style={{ marginBottom: '40px' }}>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '36px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Prior Authorizations</h1>
+                <p style={{ margin: 0, color: '#666', fontSize: '16px' }}>Manage and track your authorization requests</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '40px' }}>
+                {[
+                  { label: 'Total Requests', value: authRecords.length },
+                  { label: 'Approved', value: authRecords.filter(r => r.status === 'Approved').length },
+                  { label: 'Pending', value: authRecords.filter(r => r.status === 'Pending').length },
+                  { label: 'Action Needed', value: authRecords.filter(r => r.status === 'Needs Peer-to-Peer' || r.status === 'Denied').length }
+                ].map((stat, i) => (
+                  <div key={i} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e5e5e5' }}>
+                    <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#666' }}>{stat.label}</p>
+                    <p style={{ margin: 0, fontSize: '32px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>{stat.value}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
+                <div style={{ padding: '20px 24px', borderBottom: '1px solid #e5e5e5' }}>
+                  <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#1a1a1a' }}>Recent Requests</h2>
+                </div>
+                <div>
+                  {authRecords.map((record, i) => {
+                    const hasDetails = (record.status === 'Denied' && record.denial) || (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+                    return (
+                      <div key={record.id} onClick={() => hasDetails && setSelectedRecord(record)} style={{ padding: '20px 24px', borderBottom: i < authRecords.length - 1 ? '1px solid #f0f0f0' : 'none', display: 'grid', gridTemplateColumns: '1fr 1.2fr 140px 24px', alignItems: 'center', gap: '16px', cursor: hasDetails ? 'pointer' : 'default', transition: 'background-color 0.15s ease', backgroundColor: 'white' }} onMouseEnter={(e) => hasDetails && (e.currentTarget.style.backgroundColor = '#fafafa')} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}>
+                        <div>
+                          <p style={{ margin: 0, fontWeight: '500', color: '#1a1a1a', fontSize: '15px' }}>{record.patientName}</p>
+                          <p style={{ margin: '2px 0 0 0', color: '#999', fontSize: '13px' }}>{record.lastUpdated}</p>
+                        </div>
+                        <div>
+                          <p style={{ margin: 0, color: '#1a1a1a', fontSize: '14px' }}>{record.procedure}</p>
+                          <p style={{ margin: '2px 0 0 0', color: '#999', fontSize: '13px' }}>{record.insurance}</p>
+                        </div>
+                        <div><StatusBadge status={record.status} /></div>
+                        <div style={{ color: '#ccc', fontSize: '18px', textAlign: 'right' }}>{hasDetails ? '→' : ''}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </main>
+
+            {selectedRecord && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+                <div style={{ backgroundColor: 'white', borderRadius: '20px', width: '100%', maxWidth: '560px', maxHeight: '90vh', overflow: 'auto' }}>
+                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>{selectedRecord.patientName}</h2>
+                      <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedRecord.procedure} • {selectedRecord.insurance}</p>
+                    </div>
+                    <button onClick={() => setSelectedRecord(null)} style={{ backgroundColor: '#f5f5f5', border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+                  </div>
+
+                  {selectedRecord.status === 'Denied' && selectedRecord.denial && (
+                    <div>
+                      <div style={{ backgroundColor: '#fef2f2', padding: '20px 24px', borderBottom: '1px solid #fecaca' }}>
+                        <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: '#dc2626', fontSize: '14px' }}>Denial Code: {selectedRecord.denial.denialCode}</p>
+                        <p style={{ margin: 0, color: '#991b1b', fontSize: '15px', lineHeight: '1.6' }}>{selectedRecord.denial.denialReason}</p>
+                        <p style={{ margin: '12px 0 0 0', color: '#dc2626', fontSize: '14px', fontWeight: '500' }}>Appeal Deadline: {selectedRecord.denial.appealDeadline}</p>
+                      </div>
+                      <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5' }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Required for Resubmission</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          {selectedRecord.denial.requiredForResubmission.map((item, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                              <span style={{ minWidth: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#f5f5f5', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600' }}>{i + 1}</span>
+                              <span style={{ fontSize: '15px', color: '#1a1a1a', lineHeight: '1.5' }}>{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ padding: '24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                          <h3 style={{ margin: 0, fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dispute Call Script</h3>
+                          <a href={`tel:${selectedRecord.denial.phoneNumber}`} style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '10px 20px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '14px' }}>{selectedRecord.denial.phoneNumber}</a>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          {selectedRecord.denial.disputeScript.map((point, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
+                              <span style={{ color: '#1a1a1a', fontWeight: '600', fontSize: '14px' }}>{i + 1}.</span>
+                              <span style={{ fontSize: '14px', color: '#1a1a1a', lineHeight: '1.5' }}>{point}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <p style={{ margin: '16px 0 0 0', fontSize: '13px', color: '#666' }}>Fax additional documentation: {selectedRecord.denial.appealFaxNumber}</p>
+                      </div>
+                      <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
+                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: '#1a1a1a', color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Start Resubmission</button>
+                        <button style={{ padding: '14px 20px', backgroundColor: 'white', color: '#1a1a1a', border: '1px solid #e5e5e5', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Download</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedRecord.status === 'Needs Peer-to-Peer' && selectedRecord.peerToPeer && (
+                    <div>
+                      <div style={{ backgroundColor: '#f3e8ff', padding: '24px', borderBottom: '1px solid #ddd6fe' }}>
+                        <p style={{ margin: '0 0 4px 0', fontWeight: '600', color: '#7c3aed', fontSize: '13px' }}>Peer-to-Peer Review Scheduled</p>
+                        <p style={{ margin: '0 0 8px 0', color: '#5b21b6', fontSize: '22px', fontWeight: '600', fontFamily: "'Playfair Display', serif" }}>{selectedRecord.peerToPeer.scheduledDate} at {selectedRecord.peerToPeer.scheduledTime}</p>
+                        <p style={{ margin: 0, color: '#7c3aed', fontSize: '15px' }}>{selectedRecord.peerToPeer.reviewerName}, {selectedRecord.peerToPeer.reviewerSpecialty}</p>
+                        <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '13px' }}>Case #{selectedRecord.peerToPeer.caseNumber}</p>
+                      </div>
+                      <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5' }}>
+                        <h3 style={{ margin: '0 0 12px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Summary</h3>
+                        <p style={{ margin: 0, fontSize: '15px', color: '#1a1a1a', lineHeight: '1.6' }}>{selectedRecord.peerToPeer.clinicalNotes}</p>
+                      </div>
+                      <div style={{ padding: '24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5' }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Talking Points</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          {selectedRecord.peerToPeer.talkingPoints.map((point, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
+                              <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600' }}>✓</span>
+                              <span style={{ fontSize: '14px', color: '#1a1a1a', lineHeight: '1.5' }}>{point}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div>
+                          <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: '#1a1a1a' }}>Join Peer-to-Peer Call</p>
+                          <p style={{ margin: 0, fontSize: '13px', color: '#666' }}>Dial-in for scheduled review</p>
+                        </div>
+                        <a href={`tel:${selectedRecord.peerToPeer.phoneNumber}`} style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>{selectedRecord.peerToPeer.phoneNumber}</a>
+                      </div>
+                      <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
+                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: '#1a1a1a', color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Add to Calendar</button>
+                        <button style={{ padding: '14px 20px', backgroundColor: 'white', color: '#1a1a1a', border: '1px solid #e5e5e5', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Print</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      return (
+        <div style={{ height: step === 3 && !allIssuesResolved() ? '100vh' : 'auto', minHeight: step === 3 && !allIssuesResolved() ? 'auto' : '100vh', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'auto', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", display: 'flex', flexDirection: 'column' }}>
+          <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
-      
-      <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '16px 32px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexShrink: 0 }}>
-        <button onClick={() => setCurrentView('dashboard')} style={{ backgroundColor: 'white', color: '#666', border: '1px solid #e5e5e5', padding: '12px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '14px', cursor: 'pointer' }}>Back to Dashboard</button>
-      </header>
 
-      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '20px 32px', flexShrink: 0 }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            {['Upload', 'Insurance', 'Details', 'Review'].map((label, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#ccc' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#e5e5e5', color: step >= i + 1 ? 'white' : '#999', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600' }}>{step > i + 1 ? '✓' : i + 1}</div>
-                <span style={{ fontSize: '14px', fontWeight: step === i + 1 ? '600' : '400' }}>{label}</span>
+          <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '16px 32px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexShrink: 0 }}>
+            <button onClick={() => setCurrentView('dashboard')} style={{ backgroundColor: 'white', color: '#666', border: '1px solid #e5e5e5', padding: '12px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '14px', cursor: 'pointer' }}>Back to Dashboard</button>
+          </header>
+
+          <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '20px 32px', flexShrink: 0 }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                {['Upload', 'Insurance', 'Details', 'Review'].map((label, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#ccc' }}>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#e5e5e5', color: step >= i + 1 ? 'white' : '#999', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600' }}>{step > i + 1 ? '✓' : i + 1}</div>
+                    <span style={{ fontSize: '14px', fontWeight: step === i + 1 ? '600' : '400' }}>{label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div style={{ height: '4px', backgroundColor: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', backgroundColor: '#1a1a1a', borderRadius: '100px', width: `${((step - 1) / 3) * 100}%`, transition: 'width 0.3s ease' }} />
-          </div>
-        </div>
-      </div>
-
-      <main style={{ padding: step === 3 && !allIssuesResolved() ? '0' : '40px 32px', maxWidth: step === 3 && !allIssuesResolved() ? '100%' : '600px', margin: '0 auto', flex: step === 3 && !allIssuesResolved() ? '1' : 'none', minHeight: step === 3 && !allIssuesResolved() ? '0' : 'auto', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'visible' }}>
-        
-        {step === 1 && (
-          <div>
-            <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Upload Visit Notes</h1>
-            <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Enter patient information and upload clinical documentation.</p>
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Patient Name</label>
-              <input type="text" value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="e.g., John Smith" style={{ width: '100%', padding: '16px 20px', border: '1px solid #e5e5e5', borderRadius: '12px', fontSize: '16px', outline: 'none', boxSizing: 'border-box', backgroundColor: 'white' }} />
-            </div>
-            <div style={{ marginBottom: '32px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Clinical Notes</label>
-              {uploadProgress && !uploadedFile && (
-                <div style={{ padding: '40px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', textAlign: 'center' }}>
-                  <div style={{ width: '48px', height: '48px', margin: '0 auto 20px', position: 'relative' }}>
-                    <div style={{ width: '48px', height: '48px', border: '2px solid #e5e5e5', borderTop: '2px solid #1a1a1a', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                  </div>
-                  <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{uploadProgress === 'uploading' ? 'Uploading document...' : 'Processing document...'}</p>
-                  <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{uploadProgress === 'uploading' ? 'Please wait' : 'Extracting text content'}</p>
-                  <div style={{ marginTop: '24px', height: '6px', backgroundColor: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', backgroundColor: '#1a1a1a', borderRadius: '100px', width: uploadProgress === 'uploading' ? '45%' : '80%', transition: 'width 1.5s ease-out' }} />
-                  </div>
-                </div>
-              )}
-              {!uploadedFile && !uploadProgress && (
-                <div onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onClick={() => simulateFileUpload()} style={{ padding: '48px 24px', backgroundColor: isDragging ? '#f5f5f5' : 'white', borderRadius: '16px', border: isDragging ? '2px dashed #1a1a1a' : '1px dashed #ccc', textAlign: 'center', cursor: 'pointer' }}>
-                  <div style={{ width: '56px', height: '56px', backgroundColor: '#f5f5f5', borderRadius: '50%', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-                  </div>
-                  <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{isDragging ? 'Drop file here' : 'Drop files here or click to upload'}</p>
-                  <p style={{ margin: 0, color: '#999', fontSize: '14px' }}>Supports PDF, DOC, TXT</p>
-                </div>
-              )}
-              {uploadedFile && (
-                <div style={{ padding: '20px', backgroundColor: '#f0fdf4', borderRadius: '16px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ width: '44px', height: '44px', backgroundColor: '#dcfce7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: '#166534' }}>{uploadedFile.name}</p>
-                    <p style={{ margin: 0, fontSize: '13px', color: '#22c55e' }}>{uploadedFile.size} • Uploaded</p>
-                  </div>
-                  <button onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }} style={{ backgroundColor: 'transparent', border: 'none', color: '#22c55e', cursor: 'pointer', padding: '8px', fontSize: '20px', lineHeight: 1 }}>×</button>
-                </div>
-              )}
-              <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#999', textAlign: 'center' }}>For this demo, sample clinical notes will be loaded automatically</p>
-            </div>
-            <button onClick={() => setStep(2)} style={{ width: '100%', backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>Continue</button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div>
-            <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Select Insurance</h1>
-            <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Choose the patient's insurance provider.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
-              {['Medicare', 'UnitedHealthcare', 'Aetna', 'Blue Cross'].map(insurance => (
-                <button key={insurance} onClick={() => setSelectedInsurance(insurance)} style={{ padding: '20px 24px', border: selectedInsurance === insurance ? '2px solid #1a1a1a' : '1px solid #e5e5e5', borderRadius: '16px', backgroundColor: 'white', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div>
-                    <p style={{ margin: 0, fontWeight: '500', color: '#1a1a1a', fontSize: '16px' }}>{insurance}</p>
-                    <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666' }}>
-                      {insurance === 'Medicare' && 'Federal health insurance'}
-                      {insurance === 'UnitedHealthcare' && 'Commercial payer'}
-                      {insurance === 'Aetna' && 'Commercial payer'}
-                      {insurance === 'Blue Cross' && 'Regional BCBS plan'}
-                    </p>
-                  </div>
-                  <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: selectedInsurance === insurance ? '2px solid #1a1a1a' : '2px solid #e5e5e5', backgroundColor: selectedInsurance === insurance ? '#1a1a1a' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {selectedInsurance === insurance && <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'white' }} />}
-                  </div>
-                </button>
-              ))}
-            </div>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button onClick={() => setStep(1)} style={{ flex: 1, backgroundColor: 'white', color: '#666', border: '1px solid #e5e5e5', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>Back</button>
-              <button onClick={handleAnalysis} disabled={!selectedInsurance} style={{ flex: 2, backgroundColor: selectedInsurance ? '#1a1a1a' : '#e5e5e5', color: selectedInsurance ? 'white' : '#999', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: selectedInsurance ? 'pointer' : 'not-allowed' }}>Continue</button>
-            </div>
-          </div>
-        )}
-
-        {step === 3 && !allIssuesResolved() && (
-          <div style={{ display: 'flex', height: '100%' }}>
-            <div style={{ width: '400px', flexShrink: 0, backgroundColor: 'white', borderRight: '1px solid #e5e5e5', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', flexShrink: 0 }}>
-                <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Complete Details</h2>
-                <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedInsurance} • {Object.values(documentData).filter(v => v !== null).length}/{documentQuestions.length} complete</p>
+              <div style={{ height: '4px', backgroundColor: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', backgroundColor: '#1a1a1a', borderRadius: '100px', width: `${((step - 1) / 3) * 100}%`, transition: 'width 0.3s ease' }} />
               </div>
-              {isAnalyzing ? (
-                <div style={{ padding: '60px 24px', textAlign: 'center', flex: 1 }}>
-                  <LoadingSpinner />
-                  <p style={{ marginTop: '20px', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{analysisStage || 'Analyzing documentation...'}</p>
-                  <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '14px' }}>This may take a moment</p>
+            </div>
+          </div>
+
+          <main style={{ padding: step === 3 && !allIssuesResolved() ? '0' : '40px 32px', maxWidth: step === 3 && !allIssuesResolved() ? '100%' : '600px', margin: '0 auto', flex: step === 3 && !allIssuesResolved() ? '1' : 'none', minHeight: step === 3 && !allIssuesResolved() ? '0' : 'auto', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'visible' }}>
+
+            {step === 1 && (
+              <div>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Upload Visit Notes</h1>
+                <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Enter patient information and upload clinical documentation.</p>
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Patient Name</label>
+                  <input type="text" value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="e.g., John Smith" style={{ width: '100%', padding: '16px 20px', border: '1px solid #e5e5e5', borderRadius: '12px', fontSize: '16px', outline: 'none', boxSizing: 'border-box', backgroundColor: 'white' }} />
                 </div>
-              ) : (
-                <>
-                  <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
-                    {chatHistory.map((msg, i) => <ChatMessage key={i} message={msg.message} isSystem={msg.isSystem} />)}
-                    {isTyping && <TypingIndicator />}
-                    <div ref={chatEndRef} />
+                <div style={{ marginBottom: '32px' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Clinical Notes</label>
+                  {uploadProgress && !uploadedFile && (
+                    <div style={{ padding: '40px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', textAlign: 'center' }}>
+                      <div style={{ width: '48px', height: '48px', margin: '0 auto 20px', position: 'relative' }}>
+                        <div style={{ width: '48px', height: '48px', border: '2px solid #e5e5e5', borderTop: '2px solid #1a1a1a', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                      </div>
+                      <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{uploadProgress === 'uploading' ? 'Uploading document...' : 'Processing document...'}</p>
+                      <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{uploadProgress === 'uploading' ? 'Please wait' : 'Extracting text content'}</p>
+                      <div style={{ marginTop: '24px', height: '6px', backgroundColor: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', backgroundColor: '#1a1a1a', borderRadius: '100px', width: uploadProgress === 'uploading' ? '45%' : '80%', transition: 'width 1.5s ease-out' }} />
+                      </div>
+                    </div>
+                  )}
+                  {!uploadedFile && !uploadProgress && (
+                    <div onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onClick={() => simulateFileUpload()} style={{ padding: '48px 24px', backgroundColor: isDragging ? '#f5f5f5' : 'white', borderRadius: '16px', border: isDragging ? '2px dashed #1a1a1a' : '1px dashed #ccc', textAlign: 'center', cursor: 'pointer' }}>
+                      <div style={{ width: '56px', height: '56px', backgroundColor: '#f5f5f5', borderRadius: '50%', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                      </div>
+                      <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{isDragging ? 'Drop file here' : 'Drop files here or click to upload'}</p>
+                      <p style={{ margin: 0, color: '#999', fontSize: '14px' }}>Supports PDF, DOC, TXT</p>
+                    </div>
+                  )}
+                  {uploadedFile && (
+                    <div style={{ padding: '20px', backgroundColor: '#f0fdf4', borderRadius: '16px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#dcfce7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: '#166534' }}>{uploadedFile.name}</p>
+                        <p style={{ margin: 0, fontSize: '13px', color: '#22c55e' }}>{uploadedFile.size} • Uploaded</p>
+                      </div>
+                      <button onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }} style={{ backgroundColor: 'transparent', border: 'none', color: '#22c55e', cursor: 'pointer', padding: '8px', fontSize: '20px', lineHeight: 1 }}>×</button>
+                    </div>
+                  )}
+                  <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#999', textAlign: 'center' }}>For this demo, sample clinical notes will be loaded automatically</p>
+                </div>
+                <button onClick={() => setStep(2)} style={{ width: '100%', backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>Continue</button>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Select Insurance</h1>
+                <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Choose the patient's insurance provider.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+                  {['Medicare', 'UnitedHealthcare', 'Aetna', 'Blue Cross'].map(insurance => (
+                    <button key={insurance} onClick={() => setSelectedInsurance(insurance)} style={{ padding: '20px 24px', border: selectedInsurance === insurance ? '2px solid #1a1a1a' : '1px solid #e5e5e5', borderRadius: '16px', backgroundColor: 'white', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div>
+                        <p style={{ margin: 0, fontWeight: '500', color: '#1a1a1a', fontSize: '16px' }}>{insurance}</p>
+                        <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666' }}>
+                          {insurance === 'Medicare' && 'Federal health insurance'}
+                          {insurance === 'UnitedHealthcare' && 'Commercial payer'}
+                          {insurance === 'Aetna' && 'Commercial payer'}
+                          {insurance === 'Blue Cross' && 'Regional BCBS plan'}
+                        </p>
+                      </div>
+                      <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: selectedInsurance === insurance ? '2px solid #1a1a1a' : '2px solid #e5e5e5', backgroundColor: selectedInsurance === insurance ? '#1a1a1a' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {selectedInsurance === insurance && <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'white' }} />}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button onClick={() => setStep(1)} style={{ flex: 1, backgroundColor: 'white', color: '#666', border: '1px solid #e5e5e5', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>Back</button>
+                  <button onClick={handleAnalysis} disabled={!selectedInsurance} style={{ flex: 2, backgroundColor: selectedInsurance ? '#1a1a1a' : '#e5e5e5', color: selectedInsurance ? 'white' : '#999', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: selectedInsurance ? 'pointer' : 'not-allowed' }}>Continue</button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && !allIssuesResolved() && (
+              <div style={{ display: 'flex', height: '100%' }}>
+                <div style={{ width: '400px', flexShrink: 0, backgroundColor: 'white', borderRight: '1px solid #e5e5e5', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', flexShrink: 0 }}>
+                    <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Complete Details</h2>
+                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedInsurance} • {Object.values(documentData).filter(v => v !== null).length}/{documentQuestions.length} complete</p>
                   </div>
-                  <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', flexShrink: 0 }}>
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                      <input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleChatSubmit()} placeholder={isTyping ? "Processing..." : "Type your response..."} disabled={isTyping} style={{ flex: 1, padding: '14px 18px', border: '1px solid #e5e5e5', borderRadius: '100px', fontSize: '15px', outline: 'none', backgroundColor: isTyping ? '#fafafa' : 'white', color: isTyping ? '#999' : '#1a1a1a' }} />
-                      <button onClick={handleChatSubmit} disabled={!userInput.trim() || isTyping} style={{ backgroundColor: !userInput.trim() || isTyping ? '#e5e5e5' : '#1a1a1a', color: !userInput.trim() || isTyping ? '#999' : 'white', border: 'none', padding: '14px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: !userInput.trim() || isTyping ? 'not-allowed' : 'pointer' }}>Send</button>
+                  {isAnalyzing ? (
+                    <div style={{ padding: '60px 24px', textAlign: 'center', flex: 1 }}>
+                      <LoadingSpinner />
+                      <p style={{ marginTop: '20px', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{analysisStage || 'Analyzing documentation...'}</p>
+                      <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '14px' }}>This may take a moment</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
+                        {chatHistory.map((msg, i) => <ChatMessage key={i} message={msg.message} isSystem={msg.isSystem} />)}
+                        {isTyping && <TypingIndicator />}
+                        <div ref={chatEndRef} />
+                      </div>
+                      <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                          <input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleChatSubmit()} placeholder={isTyping ? "Processing..." : "Type your response..."} disabled={isTyping} style={{ flex: 1, padding: '14px 18px', border: '1px solid #e5e5e5', borderRadius: '100px', fontSize: '15px', outline: 'none', backgroundColor: isTyping ? '#fafafa' : 'white', color: isTyping ? '#999' : '#1a1a1a' }} />
+                          <button onClick={handleChatSubmit} disabled={!userInput.trim() || isTyping} style={{ backgroundColor: !userInput.trim() || isTyping ? '#e5e5e5' : '#1a1a1a', color: !userInput.trim() || isTyping ? '#999' : 'white', border: 'none', padding: '14px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: !userInput.trim() || isTyping ? 'not-allowed' : 'pointer' }}>Send</button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div style={{ flex: 1, backgroundColor: '#fafafa', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                    <div>
+                      <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Clinical Documentation</h2>
+                      <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Updates in real-time as you respond</p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#f0fdf4', borderRadius: '100px' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
+                      <span style={{ fontSize: '13px', color: '#166534', fontWeight: '500' }}>Live</span>
                     </div>
                   </div>
-                </>
-              )}
-            </div>
-            <div style={{ flex: 1, backgroundColor: '#fafafa', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-                <div>
-                  <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Clinical Documentation</h2>
-                  <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Updates in real-time as you respond</p>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#f0fdf4', borderRadius: '100px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
-                  <span style={{ fontSize: '13px', color: '#166534', fontWeight: '500' }}>Live</span>
-                </div>
-              </div>
-              <div ref={docScrollRef} style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
-                <div style={{ backgroundColor: 'white', border: '1px solid #e5e5e5', borderRadius: '16px', padding: '32px', maxWidth: '700px', margin: '0 auto' }}>
-                  <div style={{ textAlign: 'center', marginBottom: '32px', paddingBottom: '20px', borderBottom: '1px solid #e5e5e5' }}>
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600', color: '#1a1a1a', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Clinical Visit Documentation</h3>
-                    <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>{patientName || 'John Smith'} • DOS: 01/02/2026 • Provider: Dr. Sarah Chen, MD</p>
+                  <div ref={docScrollRef} style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
+                    <div style={{ backgroundColor: 'white', border: '1px solid #e5e5e5', borderRadius: '16px', padding: '32px', maxWidth: '700px', margin: '0 auto' }}>
+                      <div style={{ textAlign: 'center', marginBottom: '32px', paddingBottom: '20px', borderBottom: '1px solid #e5e5e5' }}>
+                        <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600', color: '#1a1a1a', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Clinical Visit Documentation</h3>
+                        <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>{patientName || 'John Smith'} • DOS: 01/02/2026 • Provider: Dr. Sarah Chen, MD</p>
+                      </div>
+                      <DocumentSection title="Chief Complaint" content="Patient presents with chronic lower back pain radiating to left leg, worsening over the past 3 months." />
+                      <DocumentSection title="History of Present Illness" content="45-year-old male with progressive lumbar radiculopathy. Pain rated 7/10, aggravated by prolonged sitting and standing. Reports numbness and tingling in L5 distribution." />
+                      <div ref={fieldRefs.prior_treatment}><DocumentSection title="Prior Conservative Treatment" content={documentData.prior_treatment} placeholder="Document previous treatments attempted..." isEditable={true} isFilled={!!documentData.prior_treatment} isHighlighted={highlightedField === 'prior_treatment'} isCurrentField={getCurrentField() === 'prior_treatment'} /></div>
+                      <DocumentSection title="Physical Examination" content="• Lumbar spine: Tenderness at L4-L5\n• Neurological: Decreased sensation left lateral foot\n• Motor: 4/5 strength left ankle dorsiflexion\n• Positive straight leg raise at 45 degrees" />
+                      <DocumentSection title="Imaging" content="MRI lumbar spine (01/02/2026): L4-L5 disc herniation with moderate neural foraminal stenosis." />
+                      <DocumentSection title="Assessment" content="1. Lumbar radiculopathy secondary to L4-L5 disc herniation\n2. Neural foraminal stenosis" />
+                      <div ref={fieldRefs.diagnosis_duration}><DocumentSection title="Diagnosis Duration" content={documentData.diagnosis_duration} placeholder="Confirm duration of current diagnosis..." isEditable={true} isFilled={!!documentData.diagnosis_duration} isHighlighted={highlightedField === 'diagnosis_duration'} isCurrentField={getCurrentField() === 'diagnosis_duration'} /></div>
+                      <DocumentSection title="Plan" content="Recommend lumbar epidural steroid injection for pain management. Request prior authorization." />
+                      <div ref={fieldRefs.procedure_details}><DocumentSection title="Procedure Specifications" content={documentData.procedure_details} placeholder="Specify procedure details, dosage, and frequency..." isEditable={true} isFilled={!!documentData.procedure_details} isHighlighted={highlightedField === 'procedure_details'} isCurrentField={getCurrentField() === 'procedure_details'} /></div>
+                    </div>
                   </div>
-                  <DocumentSection title="Chief Complaint" content="Patient presents with chronic lower back pain radiating to left leg, worsening over the past 3 months." />
-                  <DocumentSection title="History of Present Illness" content="45-year-old male with progressive lumbar radiculopathy. Pain rated 7/10, aggravated by prolonged sitting and standing. Reports numbness and tingling in L5 distribution." />
-                  <div ref={fieldRefs.prior_treatment}><DocumentSection title="Prior Conservative Treatment" content={documentData.prior_treatment} placeholder="Document previous treatments attempted..." isEditable={true} isFilled={!!documentData.prior_treatment} isHighlighted={highlightedField === 'prior_treatment'} isCurrentField={getCurrentField() === 'prior_treatment'} /></div>
-                  <DocumentSection title="Physical Examination" content="• Lumbar spine: Tenderness at L4-L5\n• Neurological: Decreased sensation left lateral foot\n• Motor: 4/5 strength left ankle dorsiflexion\n• Positive straight leg raise at 45 degrees" />
-                  <DocumentSection title="Imaging" content="MRI lumbar spine (01/02/2026): L4-L5 disc herniation with moderate neural foraminal stenosis." />
-                  <DocumentSection title="Assessment" content="1. Lumbar radiculopathy secondary to L4-L5 disc herniation\n2. Neural foraminal stenosis" />
-                  <div ref={fieldRefs.diagnosis_duration}><DocumentSection title="Diagnosis Duration" content={documentData.diagnosis_duration} placeholder="Confirm duration of current diagnosis..." isEditable={true} isFilled={!!documentData.diagnosis_duration} isHighlighted={highlightedField === 'diagnosis_duration'} isCurrentField={getCurrentField() === 'diagnosis_duration'} /></div>
-                  <DocumentSection title="Plan" content="Recommend lumbar epidural steroid injection for pain management. Request prior authorization." />
-                  <div ref={fieldRefs.procedure_details}><DocumentSection title="Procedure Specifications" content={documentData.procedure_details} placeholder="Specify procedure details, dosage, and frequency..." isEditable={true} isFilled={!!documentData.procedure_details} isHighlighted={highlightedField === 'procedure_details'} isCurrentField={getCurrentField() === 'procedure_details'} /></div>
+                  <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'center', gap: '24px', flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f3e8ff', borderRadius: '4px', border: '2px solid #7c3aed' }} /><span style={{ fontSize: '13px', color: '#666' }}>Current</span></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f0fdf4', borderRadius: '4px', border: '2px solid #22c55e' }} /><span style={{ fontSize: '13px', color: '#666' }}>Complete</span></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#fef2f2', borderRadius: '4px', border: '2px solid #fca5a5' }} /><span style={{ fontSize: '13px', color: '#666' }}>Required</span></div>
+                  </div>
                 </div>
               </div>
-              <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'center', gap: '24px', flexShrink: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f3e8ff', borderRadius: '4px', border: '2px solid #7c3aed' }} /><span style={{ fontSize: '13px', color: '#666' }}>Current</span></div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f0fdf4', borderRadius: '4px', border: '2px solid #22c55e' }} /><span style={{ fontSize: '13px', color: '#666' }}>Complete</span></div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#fef2f2', borderRadius: '4px', border: '2px solid #fca5a5' }} /><span style={{ fontSize: '13px', color: '#666' }}>Required</span></div>
-              </div>
-            </div>
-          </div>
-        )}
+            )}
 
-        {step === 3 && allIssuesResolved() && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ width: '40px', height: '40px', backgroundColor: '#22c55e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><span style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>✓</span></div>
-              <div>
-                <p style={{ margin: 0, fontWeight: '600', color: '#166534', fontSize: '16px' }}>Documentation Complete</p>
-                <p style={{ margin: '2px 0 0 0', color: '#22c55e', fontSize: '14px' }}>All {selectedInsurance} requirements satisfied</p>
-              </div>
-            </div>
-            <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
-              <div style={{ padding: '18px 24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '15px' }}>Clinical Documentation</span>
-                <span style={{ fontSize: '13px', color: '#666' }}>All fields complete</span>
-              </div>
-              <div style={{ padding: '24px', maxHeight: '350px', overflowY: 'auto' }}>
-                <DocumentSection title="Chief Complaint" content="Patient presents with chronic lower back pain radiating to left leg, worsening over the past 3 months." />
-                <DocumentSection title="History of Present Illness" content="45-year-old male with progressive lumbar radiculopathy. Pain rated 7/10, aggravated by prolonged sitting and standing. Reports numbness and tingling in L5 distribution." />
-                <DocumentSection title="Prior Conservative Treatment" content={documentData.prior_treatment} isFilled={true} isEditable={true} />
-                <DocumentSection title="Physical Examination" content="• Lumbar spine: Tenderness at L4-L5\n• Neurological: Decreased sensation left lateral foot\n• Motor: 4/5 strength left ankle dorsiflexion\n• Positive straight leg raise at 45 degrees" />
-                <DocumentSection title="Imaging" content="MRI lumbar spine (01/02/2026): L4-L5 disc herniation with moderate neural foraminal stenosis." />
-                <DocumentSection title="Assessment" content="1. Lumbar radiculopathy secondary to L4-L5 disc herniation\n2. Neural foraminal stenosis" />
-                <DocumentSection title="Diagnosis Duration" content={documentData.diagnosis_duration} isFilled={true} isEditable={true} />
-                <DocumentSection title="Plan" content="Recommend lumbar epidural steroid injection for pain management." />
-                <DocumentSection title="Procedure Specifications" content={documentData.procedure_details} isFilled={true} isEditable={true} />
-              </div>
-            </div>
-            {[
-              { title: 'Prior Authorization Summary', content: generatedOutputs.summary, type: 'text' },
-              { title: 'CPT Code Recommendations', content: generatedOutputs.cptCodes, type: 'codes' },
-              { title: 'ICD-10 Code Recommendations', content: generatedOutputs.icdCodes, type: 'codes' },
-              { title: 'Medical Necessity Narrative', content: generatedOutputs.narrative, type: 'text' },
-              { title: 'Peer-to-Peer Talking Points', content: generatedOutputs.talkingPoints, type: 'bullets', expandable: true }
-            ].map((section, i) => (
-              <div key={i} style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
-                <button onClick={() => section.expandable && setExpandedSection(expandedSection === i ? null : i)} style={{ width: '100%', padding: '18px 24px', backgroundColor: '#fafafa', border: 'none', borderBottom: section.expandable && expandedSection !== i ? 'none' : '1px solid #e5e5e5', textAlign: 'left', cursor: section.expandable ? 'pointer' : 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '15px' }}>{section.title}</span>
-                  {section.expandable && <span style={{ color: '#666', fontSize: '12px' }}>{expandedSection === i ? '▾' : '▸'}</span>}
-                </button>
-                {(!section.expandable || expandedSection === i) && (
-                  <div style={{ padding: '20px 24px' }}>
-                    {section.type === 'text' && <pre style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '14px', lineHeight: '1.7', color: '#1a1a1a', whiteSpace: 'pre-wrap' }}>{section.content}</pre>}
-                    {section.type === 'codes' && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {section.content.map((code, j) => (
-                          <div key={j} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 16px', backgroundColor: '#fafafa', borderRadius: '12px' }}>
-                            <code style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: '600', color: '#1a1a1a', backgroundColor: 'white', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e5e5e5' }}>{code.code}</code>
-                            <span style={{ fontSize: '14px', color: '#666' }}>{code.description}</span>
+            {step === 3 && allIssuesResolved() && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ width: '40px', height: '40px', backgroundColor: '#22c55e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><span style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>✓</span></div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '600', color: '#166534', fontSize: '16px' }}>Documentation Complete</p>
+                    <p style={{ margin: '2px 0 0 0', color: '#22c55e', fontSize: '14px' }}>All {selectedInsurance} requirements satisfied</p>
+                  </div>
+                </div>
+                <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
+                  <div style={{ padding: '18px 24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '15px' }}>Clinical Documentation</span>
+                    <span style={{ fontSize: '13px', color: '#666' }}>All fields complete</span>
+                  </div>
+                  <div style={{ padding: '24px', maxHeight: '350px', overflowY: 'auto' }}>
+                    <DocumentSection title="Chief Complaint" content="Patient presents with chronic lower back pain radiating to left leg, worsening over the past 3 months." />
+                    <DocumentSection title="History of Present Illness" content="45-year-old male with progressive lumbar radiculopathy. Pain rated 7/10, aggravated by prolonged sitting and standing. Reports numbness and tingling in L5 distribution." />
+                    <DocumentSection title="Prior Conservative Treatment" content={documentData.prior_treatment} isFilled={true} isEditable={true} />
+                    <DocumentSection title="Physical Examination" content="• Lumbar spine: Tenderness at L4-L5\n• Neurological: Decreased sensation left lateral foot\n• Motor: 4/5 strength left ankle dorsiflexion\n• Positive straight leg raise at 45 degrees" />
+                    <DocumentSection title="Imaging" content="MRI lumbar spine (01/02/2026): L4-L5 disc herniation with moderate neural foraminal stenosis." />
+                    <DocumentSection title="Assessment" content="1. Lumbar radiculopathy secondary to L4-L5 disc herniation\n2. Neural foraminal stenosis" />
+                    <DocumentSection title="Diagnosis Duration" content={documentData.diagnosis_duration} isFilled={true} isEditable={true} />
+                    <DocumentSection title="Plan" content="Recommend lumbar epidural steroid injection for pain management." />
+                    <DocumentSection title="Procedure Specifications" content={documentData.procedure_details} isFilled={true} isEditable={true} />
+                  </div>
+                </div>
+                {[
+                  { title: 'Prior Authorization Summary', content: generatedOutputs.summary, type: 'text' },
+                  { title: 'CPT Code Recommendations', content: generatedOutputs.cptCodes, type: 'codes' },
+                  { title: 'ICD-10 Code Recommendations', content: generatedOutputs.icdCodes, type: 'codes' },
+                  { title: 'Medical Necessity Narrative', content: generatedOutputs.narrative, type: 'text' },
+                  { title: 'Peer-to-Peer Talking Points', content: generatedOutputs.talkingPoints, type: 'bullets', expandable: true }
+                ].map((section, i) => (
+                  <div key={i} style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
+                    <button onClick={() => section.expandable && setExpandedSection(expandedSection === i ? null : i)} style={{ width: '100%', padding: '18px 24px', backgroundColor: '#fafafa', border: 'none', borderBottom: section.expandable && expandedSection !== i ? 'none' : '1px solid #e5e5e5', textAlign: 'left', cursor: section.expandable ? 'pointer' : 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '15px' }}>{section.title}</span>
+                      {section.expandable && <span style={{ color: '#666', fontSize: '12px' }}>{expandedSection === i ? '▾' : '▸'}</span>}
+                    </button>
+                    {(!section.expandable || expandedSection === i) && (
+                      <div style={{ padding: '20px 24px' }}>
+                        {section.type === 'text' && <pre style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '14px', lineHeight: '1.7', color: '#1a1a1a', whiteSpace: 'pre-wrap' }}>{section.content}</pre>}
+                        {section.type === 'codes' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {section.content.map((code, j) => (
+                              <div key={j} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 16px', backgroundColor: '#fafafa', borderRadius: '12px' }}>
+                                <code style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: '600', color: '#1a1a1a', backgroundColor: 'white', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e5e5e5' }}>{code.code}</code>
+                                <span style={{ fontSize: '14px', color: '#666' }}>{code.description}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        )}
+                        {section.type === 'bullets' && (
+                          <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none' }}>
+                            {section.content.map((point, j) => (
+                              <li key={j} style={{ fontSize: '14px', color: '#1a1a1a', marginBottom: '12px', lineHeight: '1.6', padding: '14px 16px', backgroundColor: '#fafafa', borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                                <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', flexShrink: 0 }}>✓</span>
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     )}
-                    {section.type === 'bullets' && (
-                      <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none' }}>
-                        {section.content.map((point, j) => (
-                          <li key={j} style={{ fontSize: '14px', color: '#1a1a1a', marginBottom: '12px', lineHeight: '1.6', padding: '14px 16px', backgroundColor: '#fafafa', borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', flexShrink: 0 }}>✓</span>
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
                   </div>
-                )}
+                ))}
+                <button onClick={handleSubmit} disabled={isSubmitting} style={{ width: '100%', backgroundColor: isSubmitting ? '#666' : '#1a1a1a', color: 'white', border: 'none', padding: '18px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                  {isSubmitting && <div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />}
+                  {isSubmitting ? 'Submitting...' : 'Submit Prior Authorization'}
+                </button>
+                <p style={{ textAlign: 'center', color: '#666', fontSize: '14px', margin: 0 }}>{isSubmitting ? 'Securely transmitting to ' + selectedInsurance + '...' : 'By submitting, this request will be sent to ' + selectedInsurance + ' for review'}</p>
               </div>
-            ))}
-            <button onClick={handleSubmit} disabled={isSubmitting} style={{ width: '100%', backgroundColor: isSubmitting ? '#666' : '#1a1a1a', color: 'white', border: 'none', padding: '18px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-              {isSubmitting && <div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />}
-              {isSubmitting ? 'Submitting...' : 'Submit Prior Authorization'}
-            </button>
-            <p style={{ textAlign: 'center', color: '#666', fontSize: '14px', margin: 0 }}>{isSubmitting ? 'Securely transmitting to ' + selectedInsurance + '...' : 'By submitting, this request will be sent to ' + selectedInsurance + ' for review'}</p>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+            )}
+          </main>
+        </div>
+      );
+    }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<PriorAuthDemo />);
+    ReactDOM.createRoot(document.getElementById('root')).render(<PriorAuthDemo />);
   </script>
 </body>
+
 </html>
