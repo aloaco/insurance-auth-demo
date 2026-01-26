@@ -8,47 +8,19 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
     }
 
-    @font-face {
-      font-family: 'Sofia Pro';
-      src: local('Sofia Pro'), local('Sofia Pro Regular');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sofia Pro';
-      src: local('Sofia Pro Medium');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sofia Pro';
-      src: local('Sofia Pro Semibold'), local('Sofia Pro Semi Bold');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sofia Pro';
-      src: local('Sofia Pro Bold');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Sofia Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fafafa;
     }
   </style>
 </head>
@@ -58,16 +30,23 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
+    // Helper to get relative dates
+    const getRelativeDate = (daysAgo) => {
+      const date = new Date();
+      date.setDate(date.getDate() - daysAgo);
+      return date.toISOString().split('T')[0];
+    };
+
     // Dummy data for auth records
     const initialAuthRecords = [
-      { id: 1, patientName: 'Sarah Mitchell', insurance: 'UnitedHealthcare', status: 'Approved', lastUpdated: '2026-01-02', procedure: 'MRI Lumbar Spine' },
-      { id: 2, patientName: 'James Rodriguez', insurance: 'Aetna', status: 'Pending', lastUpdated: '2026-01-01', procedure: 'CT Abdomen' },
+      { id: 1, patientName: 'Sarah Mitchell', insurance: 'UnitedHealthcare', status: 'Approved', lastUpdated: getRelativeDate(10), procedure: 'MRI Lumbar Spine' },
+      { id: 2, patientName: 'James Rodriguez', insurance: 'Aetna', status: 'Pending', lastUpdated: getRelativeDate(7), procedure: 'CT Abdomen' },
       {
         id: 3,
         patientName: 'Emily Chen',
         insurance: 'Blue Cross',
         status: 'Needs Peer-to-Peer',
-        lastUpdated: '2025-12-30',
+        lastUpdated: getRelativeDate(1),
         procedure: 'Humira Injection',
         peerToPeer: {
           scheduledDate: '2026-01-05',
@@ -92,7 +71,7 @@
         patientName: 'Robert Kim',
         insurance: 'Medicare',
         status: 'Denied',
-        lastUpdated: '2025-12-28',
+        lastUpdated: getRelativeDate(0),
         procedure: 'Spinal Fusion Surgery',
         denial: {
           denialCode: 'MED-2025-11234',
@@ -124,33 +103,25 @@
 
     const StatusBadge = ({ status }) => {
       const config = {
-        Approved: { label: 'Approved', bg: '#eaf8ef', text: '#1f6a3a', border: '#cfeedd', dot: '#22c55e' },
-        Pending: { label: 'Pending', bg: '#fff4e5', text: '#8b5a1f', border: '#f0dfc7', dot: '#f59e0b' },
-        'Needs Peer-to-Peer': { label: 'Peer-to-Peer', bg: '#f3efff', text: '#5531c5', border: '#e0d7fb', dot: '#7c3aed' },
-        Denied: { label: 'Denied', bg: '#fff0f1', text: '#9b2c2c', border: '#f1c8ce', dot: '#ef4444' }
+        Approved: { label: 'Approved', bg: '#fff', text: '#1f6a3a', border: '#cfeedd' },
+        Pending: { label: 'Pending', bg: '#fff', text: '#8b5a1f', border: '#f0dfc7' },
+        'Needs Peer-to-Peer': { label: 'Peer-to-Peer', bg: '#fff', text: '#5531c5', border: '#e0d7fb' },
+        Denied: { label: 'Denied', bg: '#fff', text: '#9b2c2c', border: '#f1c8ce' }
       };
-      const { bg, text, border, dot, label } = config[status] || config.Pending;
+      const { bg, text, border, label } = config[status] || config.Pending;
 
       return (
         <span style={{
           display: 'inline-flex',
-          alignItems: 'center',
+          alignItems: 'left',
           gap: '8px',
-          padding: '6px 12px',
           borderRadius: '999px',
           backgroundColor: bg,
           color: text,
           fontSize: '12px',
-          fontWeight: '600',
-          border: `1px solid ${border}`,
+          fontWeight: '400',
           letterSpacing: '0.2px'
         }}>
-          <span style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            backgroundColor: dot
-          }} />
           {label}
         </span>
       );
@@ -232,13 +203,13 @@
           marginBottom: '20px',
           padding: '16px 20px',
           borderRadius: '12px',
-          backgroundColor: isCurrentField ? '#f3e8ff' : isFilled ? '#f0fdf4' : isEditable ? '#fef2f2' : '#fafafa',
+          backgroundColor: '#fafafa',
           border: isCurrentField ? '2px solid #7c3aed' : isFilled ? '2px solid #22c55e' : isEditable ? '2px solid #fca5a5' : '1px solid #e5e5e5',
           transition: 'all 0.3s ease'
         }}>
           <div style={{
             fontSize: '11px',
-            fontWeight: '600',
+            fontWeight: '400',
             color: isCurrentField ? '#7c3aed' : isFilled ? '#166534' : isEditable ? '#dc2626' : '#666',
             marginBottom: '8px',
             letterSpacing: '0.5px',
@@ -248,9 +219,9 @@
             gap: '8px'
           }}>
             {title}
-            {isFilled && <span style={{ fontSize: '10px', fontWeight: '500', color: '#22c55e' }}>✓ Complete</span>}
-            {isCurrentField && !isFilled && <span style={{ fontSize: '10px', backgroundColor: '#7c3aed', color: 'white', padding: '2px 8px', borderRadius: '100px' }}>Current</span>}
-            {isEditable && !isFilled && !isCurrentField && <span style={{ fontSize: '10px', fontWeight: '500', color: '#dc2626' }}>Required</span>}
+            {isFilled && <span style={{ fontSize: '10px', fontWeight: '400', color: '#22c55e' }}>✓ Complete</span>}
+            {isCurrentField && !isFilled && <span style={{ fontSize: '10px', backgroundColor: '#fafafa', color: '#7c3aed', padding: '2px 8px', borderRadius: '100px', border: '1px solid #7c3aed' }}>Current</span>}
+            {isEditable && !isFilled && !isCurrentField && <span style={{ fontSize: '10px', fontWeight: '400', color: '#dc2626' }}>Required</span>}
           </div>
           <div style={{
             fontSize: '14px',
@@ -299,9 +270,9 @@
       };
 
       const dashboardTokens = {
-        pageBg: '#f7f5f2',
+        pageBg: '#fafafa',
         surface: '#ffffff',
-        surfaceAlt: '#fbfaf8',
+        surfaceAlt: '#ffffff',
         border: '#ebe7e1',
         borderStrong: '#e0dbd3',
         shadowSoft: '0 1px 0 rgba(17, 17, 17, 0.04), 0 12px 30px rgba(17, 17, 17, 0.06)',
@@ -326,10 +297,10 @@
 
       const tonePalette = {
         neutral: { bg: dashboardTokens.surface, text: dashboardTokens.textPrimary, border: dashboardTokens.border },
-        success: { bg: '#eef9f1', text: '#2f6b3c', border: '#d6f0dd' },
-        warning: { bg: '#fff4e5', text: '#8b5a1f', border: '#f0dfc7' },
-        danger: { bg: '#fff0f1', text: '#9b2c2c', border: '#f1c8ce' },
-        info: { bg: '#f3efff', text: '#5531c5', border: '#e0d7fb' }
+        success: { bg: '#fafafa', text: '#2f6b3c', border: '#d6f0dd' },
+        warning: { bg: '#fafafa', text: '#8b5a1f', border: '#f0dfc7' },
+        danger: { bg: '#fafafa', text: '#9b2c2c', border: '#f1c8ce' },
+        info: { bg: '#fafafa', text: '#5531c5', border: '#e0d7fb' }
       };
 
       const getInitials = (name = '') => {
@@ -342,11 +313,39 @@
       );
       const deniedCount = authRecords.filter(record => record.status === 'Denied').length;
       const peerToPeerCount = authRecords.filter(record => record.status === 'Needs Peer-to-Peer').length;
+      const approvedCount = authRecords.filter(record => record.status === 'Approved').length;
+      const pendingCount = authRecords.filter(record => record.status === 'Pending').length;
+      const approvalRate = authRecords.length > 0 ? Math.round((approvedCount / authRecords.length) * 100) : 0;
       const dashboardStats = [
-        { label: 'Total Requests', value: authRecords.length, tone: 'neutral' },
-        { label: 'Approved', value: authRecords.filter(record => record.status === 'Approved').length, tone: 'success' },
-        { label: 'Pending', value: authRecords.filter(record => record.status === 'Pending').length, tone: 'warning' },
-        { label: 'Action Needed', value: actionNeededRecords.length, tone: 'danger' }
+        {
+          label: 'Action Needed',
+          value: actionNeededRecords.length,
+          badge: actionNeededRecords.length > 0 ? { text: 'Action needed', color: '#ea580c', border: '#fdba74' } : { text: 'All clear', color: '#16a34a', border: '#86efac' },
+          subtitle: `${deniedCount} denied · ${peerToPeerCount} peer review`,
+          valueColor: '#dc2626'
+        },
+        {
+          label: 'Pending Review',
+          value: pendingCount,
+          badge: { text: 'In progress', color: '#ca8a04', border: '#fde047' },
+          subtitle: 'Awaiting insurance response',
+          valueColor: '#ca8a04'
+        },
+        {
+          label: 'Total Requests',
+          value: authRecords.length,
+          badge: { text: `${approvedCount}/${authRecords.length}`, color: '#0d9488', border: '#5eead4' },
+          subtitle: `${approvedCount} approved this period`,
+          valueColor: '#1a1a1a'
+        },
+        {
+          label: 'Approval Rate',
+          value: approvalRate,
+          suffix: '%',
+          badge: { text: 'Target: 90%', color: '#6b7280', border: '#d1d5db' },
+          subtitle: approvalRate >= 90 ? 'Meeting target rate' : 'Below target rate',
+          valueColor: '#7c3aed'
+        }
       ];
 
       useEffect(() => {
@@ -514,77 +513,50 @@
 
       if (currentView === 'dashboard') {
         return (
-          <div style={{ minHeight: '100vh', backgroundColor: dashboardTokens.pageBg, fontFamily: "'Sofia Pro', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-            <header style={{ backgroundColor: dashboardTokens.surface, borderBottom: `1px solid ${dashboardTokens.border}`, padding: `${dashboardSpacing.lg}px ${dashboardSpacing.xl}px` }}>
-              <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
-                <div>
-                  <p style={{ margin: 0, fontSize: '11px', letterSpacing: '1.2px', textTransform: 'uppercase', color: dashboardTokens.textMuted }}>Dashboard</p>
-                  <h1 style={{ margin: '6px 0 6px 0', fontSize: '32px', fontWeight: '600', color: dashboardTokens.textPrimary, fontFamily: "'Sofia Pro', sans-serif" }}>Prior Authorizations</h1>
-                  <p style={{ margin: 0, color: dashboardTokens.textSecondary, fontSize: '15px' }}>Manage and track your authorization requests</p>
-                </div>
-                <button onClick={startNewAuth} style={{ backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', padding: '14px 26px', borderRadius: '999px', fontWeight: '500', fontSize: '15px', fontFamily: "'Sofia Pro', sans-serif", cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: dashboardTokens.shadowSoft }}>
-                  <span style={{ fontSize: '18px', lineHeight: 1 }}>+</span> New Authorization
-                </button>
-              </div>
-            </header>
+          <div style={{ minHeight: '100vh', backgroundColor: dashboardTokens.pageBg, fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
             <main style={{ padding: `${dashboardSpacing.xl}px ${dashboardSpacing.xl}px`, maxWidth: '1200px', margin: '0 auto' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: `${dashboardSpacing.lg}px` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h1 style={{ margin: 0, color: '#1a1a1a', fontSize: '15px', fontWeight: '600' }}>Prior Authorizations</h1>
+                  <button onClick={startNewAuth} style={{ backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', padding: '8px 10px', borderRadius: '8px', fontWeight: '400', fontSize: '13px', fontFamily: "'Inter', sans-serif", cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: dashboardTokens.shadowSoft }}>
+                    <span>New Authorization</span>
+                  </button>
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: `${dashboardSpacing.md}px` }}>
-                  {dashboardStats.map((stat, i) => {
-                    const tone = tonePalette[stat.tone] || tonePalette.neutral;
-                    return (
-                      <div key={i} style={{ backgroundColor: tone.bg, borderRadius: dashboardTokens.radiusMd, padding: '20px 22px', border: `1px solid ${tone.border}`, boxShadow: dashboardTokens.shadowSoft }}>
-                        <p style={{ margin: '0 0 8px 0', fontSize: '12px', color: dashboardTokens.textMuted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.6px' }}>{stat.label}</p>
-                        <p style={{ margin: 0, fontSize: '30px', fontWeight: '600', color: tone.text, fontFamily: "'Sofia Pro', sans-serif" }}>{stat.value}</p>
+                  {dashboardStats.map((stat, i) => (
+                    <div key={i} style={{ backgroundColor: '#ffffff', borderRadius: '12px', padding: '18px 20px', border: '1px solid #e5e7eb' }}>
+                      <div style={{ marginBottom: '8px' }}>
+                        <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', fontWeight: '400' }}>{stat.label}</p>
                       </div>
-                    );
-                  })}
-                </div>
-
-                <div style={{ backgroundColor: dashboardTokens.surface, borderRadius: dashboardTokens.radiusLg, border: `1px solid ${dashboardTokens.border}`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', boxShadow: dashboardTokens.shadowSoft }}>
-                  <div>
-                    <p style={{ margin: 0, fontSize: '12px', fontWeight: '600', letterSpacing: '0.6px', textTransform: 'uppercase', color: dashboardTokens.textMuted }}>Action Needed</p>
-                    <p style={{ margin: '6px 0 0 0', color: dashboardTokens.textPrimary, fontSize: '16px', fontWeight: '600' }}>
-                      {actionNeededRecords.length === 0 ? 'All caught up.' : `${actionNeededRecords.length} requests need attention.`}
-                    </p>
-                    <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textSecondary, fontSize: '14px' }}>
-                      {actionNeededRecords.length === 0 ? 'No pending peer-to-peer or denied items.' : 'Focus on peer-to-peer reviews and resubmissions.'}
-                    </p>
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-                      {deniedCount > 0 && (
-                        <span style={{ padding: '6px 10px', borderRadius: '999px', backgroundColor: tonePalette.danger.bg, color: tonePalette.danger.text, border: `1px solid ${tonePalette.danger.border}`, fontSize: '12px', fontWeight: '600' }}>Denied {deniedCount}</span>
-                      )}
-                      {peerToPeerCount > 0 && (
-                        <span style={{ padding: '6px 10px', borderRadius: '999px', backgroundColor: tonePalette.info.bg, color: tonePalette.info.text, border: `1px solid ${tonePalette.info.border}`, fontSize: '12px', fontWeight: '600' }}>Peer-to-Peer {peerToPeerCount}</span>
-                      )}
-                      {actionNeededRecords.length === 0 && (
-                        <span style={{ padding: '6px 10px', borderRadius: '999px', backgroundColor: tonePalette.success.bg, color: tonePalette.success.text, border: `1px solid ${tonePalette.success.border}`, fontSize: '12px', fontWeight: '600' }}>All clear</span>
-                      )}
+                      <p style={{ margin: '0 0 6px 0', fontSize: '34px', fontWeight: '600', color: stat.valueColor, fontFamily: "'Inter', sans-serif", lineHeight: 1 }}>
+                        {stat.value}<span style={{ fontSize: '20px', fontWeight: '400' }}>{stat.suffix || ''}</span>
+                      </p>
+                      <p style={{ margin: 0, fontSize: '11px', color: '#6b7280' }}>{stat.subtitle}</p>
                     </div>
-                  </div>
-                  <a href="#recent-requests" style={{ backgroundColor: dashboardTokens.brand, color: 'white', textDecoration: 'none', padding: '12px 20px', borderRadius: '999px', fontWeight: '500', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-                    View queue →
-                  </a>
+                  ))}
                 </div>
 
-                <div id="recent-requests" style={{ backgroundColor: dashboardTokens.surface, borderRadius: dashboardTokens.radiusLg, border: `1px solid ${dashboardTokens.border}`, overflow: 'hidden', boxShadow: dashboardTokens.shadowSoft }}>
-                  <div style={{ padding: '18px 24px', borderBottom: `1px solid ${dashboardTokens.border}`, backgroundColor: dashboardTokens.surfaceAlt, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                <div id="recent-requests" style={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #e5e7eb', overflow: 'hidden' }}>
+                  <div style={{ padding: '18px 24px', borderBottom: '1px solid #e5e7eb', backgroundColor: dashboardTokens.surfaceAlt, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
                     <div>
-                      <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: dashboardTokens.textPrimary }}>Recent Requests</h2>
+                      <h2 style={{ margin: 0, fontSize: '15px', fontWeight: '400', color: dashboardTokens.textPrimary }}>Recent Requests</h2>
                       <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>{authRecords.length} total requests</p>
                     </div>
                     <span style={{ fontSize: '13px', color: dashboardTokens.textSecondary }}>Last updated today</span>
                   </div>
-                  <div style={{ padding: '10px 24px', borderBottom: `1px solid ${dashboardTokens.border}`, backgroundColor: dashboardTokens.surfaceAlt }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1.5fr 0.8fr 0.9fr', gap: '16px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.6px', color: dashboardTokens.textMuted }}>
+                  <div style={{ padding: '10px 24px', borderBottom: '1px solid #e5e7eb', backgroundColor: dashboardTokens.surfaceAlt }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1.5fr 0.8fr 0.9fr', gap: '16px', fontSize: '11px', fontWeight: '400', textTransform: 'uppercase', letterSpacing: '0.6px', color: dashboardTokens.textMuted }}>
                       <span>Patient</span>
                       <span>Procedure</span>
-                      <span>Status</span>
+                      <span style={{ textAlign: 'left', display: 'block' }}>Status</span>
                       <span style={{ textAlign: 'right' }}>Action</span>
                     </div>
                   </div>
                   <div>
-                    {authRecords.map((record, i) => {
+                    {[...authRecords].sort((a, b) => {
+                      const order = { 'Denied': 0, 'Needs Peer-to-Peer': 1, 'Pending': 2, 'Approved': 3 };
+                      return (order[a.status] ?? 4) - (order[b.status] ?? 4);
+                    }).map((record, i) => {
                       const hasDetails = (record.status === 'Denied' && record.denial) || (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
                       return (
                         <div
@@ -592,7 +564,7 @@
                           onClick={() => hasDetails && setSelectedRecord(record)}
                           style={{
                             padding: '18px 24px',
-                            borderBottom: i < authRecords.length - 1 ? `1px solid ${dashboardTokens.border}` : 'none',
+                            borderBottom: i < authRecords.length - 1 ? '1px solid #e5e7eb' : 'none',
                             display: 'grid',
                             gridTemplateColumns: '1.4fr 1.5fr 0.8fr 0.9fr',
                             alignItems: 'center',
@@ -604,17 +576,12 @@
                           onMouseEnter={(e) => hasDetails && (e.currentTarget.style.backgroundColor = dashboardTokens.surfaceAlt)}
                           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = dashboardTokens.surface)}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                            <div style={{ width: '38px', height: '38px', borderRadius: '12px', backgroundColor: dashboardTokens.surfaceAlt, border: `1px solid ${dashboardTokens.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600', fontSize: '12px', color: dashboardTokens.textSecondary }}>
-                              {getInitials(record.patientName)}
-                            </div>
-                            <div>
-                              <p style={{ margin: 0, fontWeight: '600', color: dashboardTokens.textPrimary, fontSize: '15px' }}>{record.patientName}</p>
-                              <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>Updated {record.lastUpdated}</p>
-                            </div>
+                          <div>
+                            <p style={{ margin: 0, fontWeight: '400', color: dashboardTokens.textPrimary, fontSize: '14px' }}>{record.patientName}</p>
+                            <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>Updated {record.lastUpdated}</p>
                           </div>
                           <div>
-                            <p style={{ margin: 0, color: dashboardTokens.textPrimary, fontSize: '14px', fontWeight: '500' }}>{record.procedure}</p>
+                            <p style={{ margin: 0, color: dashboardTokens.textPrimary, fontSize: '14px', fontWeight: '400' }}>{record.procedure}</p>
                             <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>{record.insurance}</p>
                           </div>
                           <div><StatusBadge status={record.status} /></div>
@@ -632,7 +599,7 @@
                                   padding: '8px 14px',
                                   borderRadius: '999px',
                                   fontSize: '13px',
-                                  fontWeight: '500',
+                                  fontWeight: '400',
                                   cursor: 'pointer',
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -658,7 +625,7 @@
                 <div style={{ backgroundColor: dashboardTokens.surface, borderRadius: dashboardTokens.radiusLg, width: '100%', maxWidth: '560px', maxHeight: '90vh', overflow: 'auto', border: `1px solid ${dashboardTokens.border}`, boxShadow: dashboardTokens.shadow }}>
                   <div style={{ padding: '22px 24px', borderBottom: `1px solid ${dashboardTokens.border}`, backgroundColor: dashboardTokens.surfaceAlt, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
                     <div>
-                      <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', fontWeight: '600', color: dashboardTokens.textPrimary, fontFamily: "'Sofia Pro', sans-serif" }}>{selectedRecord.patientName}</h2>
+                      <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', fontWeight: '400', color: dashboardTokens.textPrimary, fontFamily: "'Inter', sans-serif" }}>{selectedRecord.patientName}</h2>
                       <p style={{ margin: 0, color: dashboardTokens.textSecondary, fontSize: '14px' }}>{selectedRecord.procedure} • {selectedRecord.insurance}</p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -670,16 +637,16 @@
                   {selectedRecord.status === 'Denied' && selectedRecord.denial && (
                     <div>
                       <div style={{ backgroundColor: tonePalette.danger.bg, padding: '20px 24px', borderBottom: `1px solid ${tonePalette.danger.border}` }}>
-                        <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: tonePalette.danger.text, fontSize: '14px' }}>Denial Code: {selectedRecord.denial.denialCode}</p>
+                        <p style={{ margin: '0 0 8px 0', fontWeight: '400', color: tonePalette.danger.text, fontSize: '14px' }}>Denial Code: {selectedRecord.denial.denialCode}</p>
                         <p style={{ margin: 0, color: dashboardTokens.textSecondary, fontSize: '15px', lineHeight: '1.6' }}>{selectedRecord.denial.denialReason}</p>
-                        <p style={{ margin: '12px 0 0 0', color: tonePalette.danger.text, fontSize: '14px', fontWeight: '500' }}>Appeal Deadline: {selectedRecord.denial.appealDeadline}</p>
+                        <p style={{ margin: '12px 0 0 0', color: tonePalette.danger.text, fontSize: '14px', fontWeight: '400' }}>Appeal Deadline: {selectedRecord.denial.appealDeadline}</p>
                       </div>
                       <div style={{ padding: '24px', borderBottom: `1px solid ${dashboardTokens.border}` }}>
-                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Required for Resubmission</h3>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '400', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Required for Resubmission</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                           {selectedRecord.denial.requiredForResubmission.map((item, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                              <span style={{ minWidth: '24px', height: '24px', borderRadius: '50%', backgroundColor: dashboardTokens.surfaceAlt, color: dashboardTokens.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', border: `1px solid ${dashboardTokens.border}` }}>{i + 1}</span>
+                              <span style={{ minWidth: '24px', height: '24px', borderRadius: '50%', backgroundColor: dashboardTokens.surfaceAlt, color: dashboardTokens.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '400', border: `1px solid ${dashboardTokens.border}` }}>{i + 1}</span>
                               <span style={{ fontSize: '15px', color: dashboardTokens.textPrimary, lineHeight: '1.5' }}>{item}</span>
                             </div>
                           ))}
@@ -687,13 +654,13 @@
                       </div>
                       <div style={{ padding: '24px', backgroundColor: dashboardTokens.surfaceAlt, borderBottom: `1px solid ${dashboardTokens.border}` }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                          <h3 style={{ margin: 0, fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dispute Call Script</h3>
-                          <a href={`tel:${selectedRecord.denial.phoneNumber}`} style={{ backgroundColor: dashboardTokens.brand, color: 'white', padding: '10px 20px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '14px' }}>{selectedRecord.denial.phoneNumber}</a>
+                          <h3 style={{ margin: 0, fontSize: '11px', fontWeight: '400', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dispute Call Script</h3>
+                          <a href={`tel:${selectedRecord.denial.phoneNumber}`} style={{ backgroundColor: '#fff', color: dashboardTokens.textPrimary, padding: '10px 20px', borderRadius: '100px', textDecoration: 'none', fontWeight: '400', fontSize: '14px', border: `1px solid ${dashboardTokens.border}` }}>{selectedRecord.denial.phoneNumber}</a>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           {selectedRecord.denial.disputeScript.map((point, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: dashboardTokens.surface, borderRadius: '12px', border: `1px solid ${dashboardTokens.border}` }}>
-                              <span style={{ color: dashboardTokens.textPrimary, fontWeight: '600', fontSize: '14px' }}>{i + 1}.</span>
+                              <span style={{ color: dashboardTokens.textPrimary, fontWeight: '400', fontSize: '14px' }}>{i + 1}.</span>
                               <span style={{ fontSize: '14px', color: dashboardTokens.textPrimary, lineHeight: '1.5' }}>{point}</span>
                             </div>
                           ))}
@@ -701,8 +668,8 @@
                         <p style={{ margin: '16px 0 0 0', fontSize: '13px', color: dashboardTokens.textSecondary }}>Fax additional documentation: {selectedRecord.denial.appealFaxNumber}</p>
                       </div>
                       <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
-                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Start Resubmission</button>
-                        <button style={{ padding: '14px 20px', backgroundColor: dashboardTokens.surface, color: dashboardTokens.textPrimary, border: `1px solid ${dashboardTokens.border}`, borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Download</button>
+                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', borderRadius: '100px', fontWeight: '400', fontSize: '15px', cursor: 'pointer' }}>Start Resubmission</button>
+                        <button style={{ padding: '14px 20px', backgroundColor: dashboardTokens.surface, color: dashboardTokens.textPrimary, border: `1px solid ${dashboardTokens.border}`, borderRadius: '100px', fontWeight: '400', fontSize: '15px', cursor: 'pointer' }}>Download</button>
                       </div>
                     </div>
                   )}
@@ -710,21 +677,21 @@
                   {selectedRecord.status === 'Needs Peer-to-Peer' && selectedRecord.peerToPeer && (
                     <div>
                       <div style={{ backgroundColor: tonePalette.info.bg, padding: '24px', borderBottom: `1px solid ${tonePalette.info.border}` }}>
-                        <p style={{ margin: '0 0 4px 0', fontWeight: '600', color: tonePalette.info.text, fontSize: '13px' }}>Peer-to-Peer Review Scheduled</p>
-                        <p style={{ margin: '0 0 8px 0', color: tonePalette.info.text, fontSize: '22px', fontWeight: '600', fontFamily: "'Sofia Pro', sans-serif" }}>{selectedRecord.peerToPeer.scheduledDate} at {selectedRecord.peerToPeer.scheduledTime}</p>
+                        <p style={{ margin: '0 0 4px 0', fontWeight: '400', color: tonePalette.info.text, fontSize: '13px' }}>Peer-to-Peer Review Scheduled</p>
+                        <p style={{ margin: '0 0 8px 0', color: tonePalette.info.text, fontSize: '22px', fontWeight: '400', fontFamily: "'Inter', sans-serif" }}>{selectedRecord.peerToPeer.scheduledDate} at {selectedRecord.peerToPeer.scheduledTime}</p>
                         <p style={{ margin: 0, color: dashboardTokens.textPrimary, fontSize: '15px' }}>{selectedRecord.peerToPeer.reviewerName}, {selectedRecord.peerToPeer.reviewerSpecialty}</p>
                         <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textSecondary, fontSize: '13px' }}>Case #{selectedRecord.peerToPeer.caseNumber}</p>
                       </div>
                       <div style={{ padding: '24px', borderBottom: `1px solid ${dashboardTokens.border}` }}>
-                        <h3 style={{ margin: '0 0 12px 0', fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Summary</h3>
+                        <h3 style={{ margin: '0 0 12px 0', fontSize: '11px', fontWeight: '400', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Summary</h3>
                         <p style={{ margin: 0, fontSize: '15px', color: dashboardTokens.textPrimary, lineHeight: '1.6' }}>{selectedRecord.peerToPeer.clinicalNotes}</p>
                       </div>
                       <div style={{ padding: '24px', backgroundColor: dashboardTokens.surfaceAlt, borderBottom: `1px solid ${dashboardTokens.border}` }}>
-                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Talking Points</h3>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '400', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Talking Points</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           {selectedRecord.peerToPeer.talkingPoints.map((point, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: dashboardTokens.surface, borderRadius: '12px', border: `1px solid ${dashboardTokens.border}` }}>
-                              <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: tonePalette.success.bg, color: tonePalette.success.text, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', border: `1px solid ${tonePalette.success.border}` }}>✓</span>
+                              <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: tonePalette.success.bg, color: tonePalette.success.text, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '400', border: `1px solid ${tonePalette.success.border}` }}>✓</span>
                               <span style={{ fontSize: '14px', color: dashboardTokens.textPrimary, lineHeight: '1.5' }}>{point}</span>
                             </div>
                           ))}
@@ -732,14 +699,14 @@
                       </div>
                       <div style={{ padding: '24px', borderBottom: `1px solid ${dashboardTokens.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div>
-                          <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: dashboardTokens.textPrimary }}>Join Peer-to-Peer Call</p>
+                          <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '400', color: dashboardTokens.textPrimary }}>Join Peer-to-Peer Call</p>
                           <p style={{ margin: 0, fontSize: '13px', color: dashboardTokens.textSecondary }}>Dial-in for scheduled review</p>
                         </div>
-                        <a href={`tel:${selectedRecord.peerToPeer.phoneNumber}`} style={{ backgroundColor: dashboardTokens.brand, color: 'white', padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>{selectedRecord.peerToPeer.phoneNumber}</a>
+                        <a href={`tel:${selectedRecord.peerToPeer.phoneNumber}`} style={{ backgroundColor: '#fff', color: dashboardTokens.textPrimary, padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', fontWeight: '400', fontSize: '15px', border: `1px solid ${dashboardTokens.border}` }}>{selectedRecord.peerToPeer.phoneNumber}</a>
                       </div>
                       <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
-                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Add to Calendar</button>
-                        <button style={{ padding: '14px 20px', backgroundColor: dashboardTokens.surface, color: dashboardTokens.textPrimary, border: `1px solid ${dashboardTokens.border}`, borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Print</button>
+                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', borderRadius: '100px', fontWeight: '400', fontSize: '15px', cursor: 'pointer' }}>Add to Calendar</button>
+                        <button style={{ padding: '14px 20px', backgroundColor: dashboardTokens.surface, color: dashboardTokens.textPrimary, border: `1px solid ${dashboardTokens.border}`, borderRadius: '100px', fontWeight: '400', fontSize: '15px', cursor: 'pointer' }}>Print</button>
                       </div>
                     </div>
                   )}
@@ -751,22 +718,21 @@
       }
 
       return (
-        <div style={{ height: step === 3 && !allIssuesResolved() ? '100vh' : 'auto', minHeight: step === 3 && !allIssuesResolved() ? 'auto' : '100vh', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'auto', backgroundColor: '#fafafa', fontFamily: "'Sofia Pro', -apple-system, BlinkMacSystemFont, sans-serif", display: 'flex', flexDirection: 'column' }}>
+        <div style={{ height: step === 3 && !allIssuesResolved() ? '100vh' : 'auto', minHeight: step === 3 && !allIssuesResolved() ? 'auto' : '100vh', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'auto', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", display: 'flex', flexDirection: 'column' }}>
           <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
 
-          <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '16px 32px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexShrink: 0 }}>
-            <button onClick={() => setCurrentView('dashboard')} style={{ backgroundColor: 'white', color: '#666', border: '1px solid #e5e5e5', padding: '12px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '14px', cursor: 'pointer' }}>Back to Dashboard</button>
-          </header>
-
-          <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '20px 32px', flexShrink: 0 }}>
+          <div style={{ backgroundColor: '#fafafa', padding: '20px 32px', flexShrink: 0 }}>
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                <button onClick={() => setCurrentView('dashboard')} style={{ backgroundColor: '#fafafa', color: '#666', border: '1px solid #e5e5e5', padding: '10px 20px', borderRadius: '100px', fontWeight: '400', fontSize: '13px', cursor: 'pointer' }}>Back to Dashboard</button>
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                 {['Upload', 'Insurance', 'Details', 'Review'].map((label, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#ccc' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#e5e5e5', color: step >= i + 1 ? 'white' : '#999', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600' }}>{step > i + 1 ? '✓' : i + 1}</div>
-                    <span style={{ fontSize: '14px', fontWeight: step === i + 1 ? '600' : '400' }}>{label}</span>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: step > i + 1 ? '#22c55e' : step === i + 1 ? '#1a1a1a' : '#e5e5e5', color: step >= i + 1 ? 'white' : '#999', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '400' }}>{step > i + 1 ? '✓' : i + 1}</div>
+                    <span style={{ fontSize: '14px', fontWeight: '400' }}>{label}</span>
                   </div>
                 ))}
               </div>
@@ -780,20 +746,20 @@
 
             {step === 1 && (
               <div>
-                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Upload Visit Notes</h1>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Inter', sans-serif" }}>Upload Visit Notes</h1>
                 <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Enter patient information and upload clinical documentation.</p>
                 <div style={{ marginBottom: '24px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Patient Name</label>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '400', color: '#1a1a1a' }}>Patient Name</label>
                   <input type="text" value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="e.g., John Smith" style={{ width: '100%', padding: '16px 20px', border: '1px solid #e5e5e5', borderRadius: '12px', fontSize: '16px', outline: 'none', boxSizing: 'border-box', backgroundColor: 'white' }} />
                 </div>
                 <div style={{ marginBottom: '32px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Clinical Notes</label>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '400', color: '#1a1a1a' }}>Clinical Notes</label>
                   {uploadProgress && !uploadedFile && (
-                    <div style={{ padding: '40px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', textAlign: 'center' }}>
+                    <div style={{ padding: '40px', backgroundColor: '#fafafa', borderRadius: '16px', border: '1px solid #e5e5e5', textAlign: 'center' }}>
                       <div style={{ width: '48px', height: '48px', margin: '0 auto 20px', position: 'relative' }}>
                         <div style={{ width: '48px', height: '48px', border: '2px solid #e5e5e5', borderTop: '2px solid #1a1a1a', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                       </div>
-                      <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{uploadProgress === 'uploading' ? 'Uploading document...' : 'Processing document...'}</p>
+                      <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '400' }}>{uploadProgress === 'uploading' ? 'Uploading document...' : 'Processing document...'}</p>
                       <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{uploadProgress === 'uploading' ? 'Please wait' : 'Extracting text content'}</p>
                       <div style={{ marginTop: '24px', height: '6px', backgroundColor: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
                         <div style={{ height: '100%', backgroundColor: '#1a1a1a', borderRadius: '100px', width: uploadProgress === 'uploading' ? '45%' : '80%', transition: 'width 1.5s ease-out' }} />
@@ -801,21 +767,21 @@
                     </div>
                   )}
                   {!uploadedFile && !uploadProgress && (
-                    <div onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onClick={() => simulateFileUpload()} style={{ padding: '48px 24px', backgroundColor: isDragging ? '#f5f5f5' : 'white', borderRadius: '16px', border: isDragging ? '2px dashed #1a1a1a' : '1px dashed #ccc', textAlign: 'center', cursor: 'pointer' }}>
-                      <div style={{ width: '56px', height: '56px', backgroundColor: '#f5f5f5', borderRadius: '50%', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onClick={() => simulateFileUpload()} style={{ padding: '48px 24px', backgroundColor: '#fafafa', borderRadius: '16px', border: isDragging ? '2px dashed #1a1a1a' : '1px dashed #ccc', textAlign: 'center', cursor: 'pointer' }}>
+                      <div style={{ width: '56px', height: '56px', backgroundColor: '#fafafa', borderRadius: '50%', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e5e5' }}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
                       </div>
-                      <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{isDragging ? 'Drop file here' : 'Drop files here or click to upload'}</p>
+                      <p style={{ margin: '0 0 4px 0', color: '#1a1a1a', fontSize: '16px', fontWeight: '400' }}>{isDragging ? 'Drop file here' : 'Drop files here or click to upload'}</p>
                       <p style={{ margin: 0, color: '#999', fontSize: '14px' }}>Supports PDF, DOC, TXT</p>
                     </div>
                   )}
                   {uploadedFile && (
-                    <div style={{ padding: '20px', backgroundColor: '#f0fdf4', borderRadius: '16px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '44px', height: '44px', backgroundColor: '#dcfce7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ padding: '20px', backgroundColor: '#fafafa', borderRadius: '16px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#fafafa', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #bbf7d0' }}>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: '#166534' }}>{uploadedFile.name}</p>
+                        <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '400', color: '#166534' }}>{uploadedFile.name}</p>
                         <p style={{ margin: 0, fontSize: '13px', color: '#22c55e' }}>{uploadedFile.size} • Uploaded</p>
                       </div>
                       <button onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }} style={{ backgroundColor: 'transparent', border: 'none', color: '#22c55e', cursor: 'pointer', padding: '8px', fontSize: '20px', lineHeight: 1 }}>×</button>
@@ -823,19 +789,19 @@
                   )}
                   <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#999', textAlign: 'center' }}>For this demo, sample clinical notes will be loaded automatically</p>
                 </div>
-                <button onClick={() => setStep(2)} style={{ width: '100%', backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>Continue</button>
+                <button onClick={() => setStep(2)} style={{ width: '100%', backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '400', fontSize: '16px', cursor: 'pointer' }}>Continue</button>
               </div>
             )}
 
             {step === 2 && (
               <div>
-                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Select Insurance</h1>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Inter', sans-serif" }}>Select Insurance</h1>
                 <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Choose the patient's insurance provider.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
                   {['Medicare', 'UnitedHealthcare', 'Aetna', 'Blue Cross'].map(insurance => (
-                    <button key={insurance} onClick={() => setSelectedInsurance(insurance)} style={{ padding: '20px 24px', border: selectedInsurance === insurance ? '2px solid #1a1a1a' : '1px solid #e5e5e5', borderRadius: '16px', backgroundColor: 'white', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <button key={insurance} onClick={() => setSelectedInsurance(insurance)} style={{ padding: '20px 24px', border: selectedInsurance === insurance ? '2px solid #1a1a1a' : '1px solid #e5e5e5', borderRadius: '16px', backgroundColor: '#fafafa', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div>
-                        <p style={{ margin: 0, fontWeight: '500', color: '#1a1a1a', fontSize: '16px' }}>{insurance}</p>
+                        <p style={{ margin: 0, fontWeight: '400', color: '#1a1a1a', fontSize: '16px' }}>{insurance}</p>
                         <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666' }}>
                           {insurance === 'Medicare' && 'Federal health insurance'}
                           {insurance === 'UnitedHealthcare' && 'Commercial payer'}
@@ -850,23 +816,23 @@
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button onClick={() => setStep(1)} style={{ flex: 1, backgroundColor: 'white', color: '#666', border: '1px solid #e5e5e5', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>Back</button>
-                  <button onClick={handleAnalysis} disabled={!selectedInsurance} style={{ flex: 2, backgroundColor: selectedInsurance ? '#1a1a1a' : '#e5e5e5', color: selectedInsurance ? 'white' : '#999', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: selectedInsurance ? 'pointer' : 'not-allowed' }}>Continue</button>
+                  <button onClick={() => setStep(1)} style={{ flex: 1, backgroundColor: '#fafafa', color: '#666', border: '1px solid #e5e5e5', padding: '16px 24px', borderRadius: '100px', fontWeight: '400', fontSize: '16px', cursor: 'pointer' }}>Back</button>
+                  <button onClick={handleAnalysis} disabled={!selectedInsurance} style={{ flex: 2, backgroundColor: selectedInsurance ? '#1a1a1a' : '#e5e5e5', color: selectedInsurance ? 'white' : '#999', border: 'none', padding: '16px 24px', borderRadius: '100px', fontWeight: '400', fontSize: '16px', cursor: selectedInsurance ? 'pointer' : 'not-allowed' }}>Continue</button>
                 </div>
               </div>
             )}
 
             {step === 3 && !allIssuesResolved() && (
               <div style={{ display: 'flex', height: '100%' }}>
-                <div style={{ width: '400px', flexShrink: 0, backgroundColor: 'white', borderRight: '1px solid #e5e5e5', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ width: '400px', flexShrink: 0, backgroundColor: '#fafafa', borderRight: '1px solid #e5e5e5', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', flexShrink: 0 }}>
-                    <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Complete Details</h2>
+                    <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '400', color: '#1a1a1a', fontFamily: "'Inter', sans-serif" }}>Complete Details</h2>
                     <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedInsurance} • {Object.values(documentData).filter(v => v !== null).length}/{documentQuestions.length} complete</p>
                   </div>
                   {isAnalyzing ? (
                     <div style={{ padding: '60px 24px', textAlign: 'center', flex: 1 }}>
                       <LoadingSpinner />
-                      <p style={{ marginTop: '20px', color: '#1a1a1a', fontSize: '16px', fontWeight: '500' }}>{analysisStage || 'Analyzing documentation...'}</p>
+                      <p style={{ marginTop: '20px', color: '#1a1a1a', fontSize: '16px', fontWeight: '400' }}>{analysisStage || 'Analyzing documentation...'}</p>
                       <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '14px' }}>This may take a moment</p>
                     </div>
                   ) : (
@@ -879,27 +845,26 @@
                       <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', flexShrink: 0 }}>
                         <div style={{ display: 'flex', gap: '12px' }}>
                           <input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleChatSubmit()} placeholder={isTyping ? "Processing..." : "Type your response..."} disabled={isTyping} style={{ flex: 1, padding: '14px 18px', border: '1px solid #e5e5e5', borderRadius: '100px', fontSize: '15px', outline: 'none', backgroundColor: isTyping ? '#fafafa' : 'white', color: isTyping ? '#999' : '#1a1a1a' }} />
-                          <button onClick={handleChatSubmit} disabled={!userInput.trim() || isTyping} style={{ backgroundColor: !userInput.trim() || isTyping ? '#e5e5e5' : '#1a1a1a', color: !userInput.trim() || isTyping ? '#999' : 'white', border: 'none', padding: '14px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: !userInput.trim() || isTyping ? 'not-allowed' : 'pointer' }}>Send</button>
+                          <button onClick={handleChatSubmit} disabled={!userInput.trim() || isTyping} style={{ backgroundColor: !userInput.trim() || isTyping ? '#e5e5e5' : '#1a1a1a', color: !userInput.trim() || isTyping ? '#999' : 'white', border: 'none', padding: '14px 24px', borderRadius: '100px', fontWeight: '400', fontSize: '15px', cursor: !userInput.trim() || isTyping ? 'not-allowed' : 'pointer' }}>Send</button>
                         </div>
                       </div>
                     </>
                   )}
                 </div>
                 <div style={{ flex: 1, backgroundColor: '#fafafa', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', backgroundColor: '#fafafa', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                     <div>
-                      <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Clinical Documentation</h2>
+                      <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '400', color: '#1a1a1a', fontFamily: "'Inter', sans-serif" }}>Clinical Documentation</h2>
                       <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Updates in real-time as you respond</p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#f0fdf4', borderRadius: '100px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
-                      <span style={{ fontSize: '13px', color: '#166534', fontWeight: '500' }}>Live</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#fafafa', borderRadius: '100px', border: '1px solid #e5e5e5' }}>
+                      <span style={{ fontSize: '13px', color: '#166534', fontWeight: '400' }}>Live</span>
                     </div>
                   </div>
                   <div ref={docScrollRef} style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
-                    <div style={{ backgroundColor: 'white', border: '1px solid #e5e5e5', borderRadius: '16px', padding: '32px', maxWidth: '700px', margin: '0 auto' }}>
+                    <div style={{ backgroundColor: '#fafafa', border: '1px solid #e5e5e5', borderRadius: '16px', padding: '32px', maxWidth: '700px', margin: '0 auto' }}>
                       <div style={{ textAlign: 'center', marginBottom: '32px', paddingBottom: '20px', borderBottom: '1px solid #e5e5e5' }}>
-                        <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600', color: '#1a1a1a', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Clinical Visit Documentation</h3>
+                        <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '400', color: '#1a1a1a', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Clinical Visit Documentation</h3>
                         <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>{patientName || 'John Smith'} • DOS: 01/02/2026 • Provider: Dr. Sarah Chen, MD</p>
                       </div>
                       <DocumentSection title="Chief Complaint" content="Patient presents with chronic lower back pain radiating to left leg, worsening over the past 3 months." />
@@ -913,10 +878,10 @@
                       <div ref={fieldRefs.procedure_details}><DocumentSection title="Procedure Specifications" content={documentData.procedure_details} placeholder="Specify procedure details, dosage, and frequency..." isEditable={true} isFilled={!!documentData.procedure_details} isHighlighted={highlightedField === 'procedure_details'} isCurrentField={getCurrentField() === 'procedure_details'} /></div>
                     </div>
                   </div>
-                  <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'center', gap: '24px', flexShrink: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f3e8ff', borderRadius: '4px', border: '2px solid #7c3aed' }} /><span style={{ fontSize: '13px', color: '#666' }}>Current</span></div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f0fdf4', borderRadius: '4px', border: '2px solid #22c55e' }} /><span style={{ fontSize: '13px', color: '#666' }}>Complete</span></div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#fef2f2', borderRadius: '4px', border: '2px solid #fca5a5' }} /><span style={{ fontSize: '13px', color: '#666' }}>Required</span></div>
+                  <div style={{ padding: '20px 24px', borderTop: '1px solid #e5e5e5', backgroundColor: '#fafafa', display: 'flex', justifyContent: 'center', gap: '24px', flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#fafafa', borderRadius: '4px', border: '2px solid #7c3aed' }} /><span style={{ fontSize: '13px', color: '#666' }}>Current</span></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#fafafa', borderRadius: '4px', border: '2px solid #22c55e' }} /><span style={{ fontSize: '13px', color: '#666' }}>Complete</span></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#fafafa', borderRadius: '4px', border: '2px solid #fca5a5' }} /><span style={{ fontSize: '13px', color: '#666' }}>Required</span></div>
                   </div>
                 </div>
               </div>
@@ -924,16 +889,16 @@
 
             {step === 3 && allIssuesResolved() && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ width: '40px', height: '40px', backgroundColor: '#22c55e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><span style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>✓</span></div>
+                <div style={{ backgroundColor: '#fafafa', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ width: '40px', height: '40px', backgroundColor: '#fafafa', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #22c55e' }}><span style={{ color: '#22c55e', fontSize: '18px', fontWeight: '400' }}>✓</span></div>
                   <div>
-                    <p style={{ margin: 0, fontWeight: '600', color: '#166534', fontSize: '16px' }}>Documentation Complete</p>
+                    <p style={{ margin: 0, fontWeight: '400', color: '#166534', fontSize: '16px' }}>Documentation Complete</p>
                     <p style={{ margin: '2px 0 0 0', color: '#22c55e', fontSize: '14px' }}>All {selectedInsurance} requirements satisfied</p>
                   </div>
                 </div>
-                <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
+                <div style={{ backgroundColor: '#fafafa', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
                   <div style={{ padding: '18px 24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '15px' }}>Clinical Documentation</span>
+                    <span style={{ fontWeight: '400', color: '#1a1a1a', fontSize: '15px' }}>Clinical Documentation</span>
                     <span style={{ fontSize: '13px', color: '#666' }}>All fields complete</span>
                   </div>
                   <div style={{ padding: '24px', maxHeight: '350px', overflowY: 'auto' }}>
@@ -955,19 +920,19 @@
                   { title: 'Medical Necessity Narrative', content: generatedOutputs.narrative, type: 'text' },
                   { title: 'Peer-to-Peer Talking Points', content: generatedOutputs.talkingPoints, type: 'bullets', expandable: true }
                 ].map((section, i) => (
-                  <div key={i} style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
+                  <div key={i} style={{ backgroundColor: '#fafafa', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
                     <button onClick={() => section.expandable && setExpandedSection(expandedSection === i ? null : i)} style={{ width: '100%', padding: '18px 24px', backgroundColor: '#fafafa', border: 'none', borderBottom: section.expandable && expandedSection !== i ? 'none' : '1px solid #e5e5e5', textAlign: 'left', cursor: section.expandable ? 'pointer' : 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: '600', color: '#1a1a1a', fontSize: '15px' }}>{section.title}</span>
+                      <span style={{ fontWeight: '400', color: '#1a1a1a', fontSize: '15px' }}>{section.title}</span>
                       {section.expandable && <span style={{ color: '#666', fontSize: '12px' }}>{expandedSection === i ? '▾' : '▸'}</span>}
                     </button>
                     {(!section.expandable || expandedSection === i) && (
                       <div style={{ padding: '20px 24px' }}>
-                        {section.type === 'text' && <pre style={{ margin: 0, fontFamily: "'Sofia Pro', sans-serif", fontSize: '14px', lineHeight: '1.7', color: '#1a1a1a', whiteSpace: 'pre-wrap' }}>{section.content}</pre>}
+                        {section.type === 'text' && <pre style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '14px', lineHeight: '1.7', color: '#1a1a1a', whiteSpace: 'pre-wrap' }}>{section.content}</pre>}
                         {section.type === 'codes' && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {section.content.map((code, j) => (
                               <div key={j} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 16px', backgroundColor: '#fafafa', borderRadius: '12px' }}>
-                                <code style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: '600', color: '#1a1a1a', backgroundColor: 'white', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e5e5e5' }}>{code.code}</code>
+                                <code style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: '400', color: '#1a1a1a', backgroundColor: '#fafafa', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e5e5e5' }}>{code.code}</code>
                                 <span style={{ fontSize: '14px', color: '#666' }}>{code.description}</span>
                               </div>
                             ))}
@@ -977,7 +942,7 @@
                           <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                             {section.content.map((point, j) => (
                               <li key={j} style={{ fontSize: '14px', color: '#1a1a1a', marginBottom: '12px', lineHeight: '1.6', padding: '14px 16px', backgroundColor: '#fafafa', borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                                <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', flexShrink: 0 }}>✓</span>
+                                <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#fafafa', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '400', flexShrink: 0, border: '1px solid #bbf7d0' }}>✓</span>
                                 {point}
                               </li>
                             ))}
@@ -987,7 +952,7 @@
                     )}
                   </div>
                 ))}
-                <button onClick={handleSubmit} disabled={isSubmitting} style={{ width: '100%', backgroundColor: isSubmitting ? '#666' : '#1a1a1a', color: 'white', border: 'none', padding: '18px 24px', borderRadius: '100px', fontWeight: '500', fontSize: '16px', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <button onClick={handleSubmit} disabled={isSubmitting} style={{ width: '100%', backgroundColor: isSubmitting ? '#666' : '#1a1a1a', color: 'white', border: 'none', padding: '18px 24px', borderRadius: '100px', fontWeight: '400', fontSize: '16px', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                   {isSubmitting && <div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />}
                   {isSubmitting ? 'Submitting...' : 'Submit Prior Authorization'}
                 </button>
