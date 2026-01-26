@@ -13,9 +13,42 @@
       box-sizing: border-box;
     }
 
+    @font-face {
+      font-family: 'Sofia Pro';
+      src: local('Sofia Pro'), local('Sofia Pro Regular');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sofia Pro';
+      src: local('Sofia Pro Medium');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sofia Pro';
+      src: local('Sofia Pro Semibold'), local('Sofia Pro Semi Bold');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sofia Pro';
+      src: local('Sofia Pro Bold');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
     body {
       margin: 0;
       padding: 0;
+      font-family: 'Sofia Pro', -apple-system, BlinkMacSystemFont, sans-serif;
     }
   </style>
 </head>
@@ -91,27 +124,32 @@
 
     const StatusBadge = ({ status }) => {
       const config = {
-        Approved: { color: '#22c55e', label: 'Approved' },
-        Pending: { color: '#eab308', label: 'Pending' },
-        'Needs Peer-to-Peer': { color: '#7c3aed', label: 'Peer-to-Peer' },
-        Denied: { color: '#dc2626', label: 'Denied' }
+        Approved: { label: 'Approved', bg: '#eaf8ef', text: '#1f6a3a', border: '#cfeedd', dot: '#22c55e' },
+        Pending: { label: 'Pending', bg: '#fff4e5', text: '#8b5a1f', border: '#f0dfc7', dot: '#f59e0b' },
+        'Needs Peer-to-Peer': { label: 'Peer-to-Peer', bg: '#f3efff', text: '#5531c5', border: '#e0d7fb', dot: '#7c3aed' },
+        Denied: { label: 'Denied', bg: '#fff0f1', text: '#9b2c2c', border: '#f1c8ce', dot: '#ef4444' }
       };
-      const { color, label } = config[status] || config.Pending;
+      const { bg, text, border, dot, label } = config[status] || config.Pending;
 
       return (
         <span style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          fontSize: '14px',
-          fontWeight: '500',
-          color: '#1a1a1a'
+          padding: '6px 12px',
+          borderRadius: '999px',
+          backgroundColor: bg,
+          color: text,
+          fontSize: '12px',
+          fontWeight: '600',
+          border: `1px solid ${border}`,
+          letterSpacing: '0.2px'
         }}>
           <span style={{
-            width: '8px',
-            height: '8px',
+            width: '6px',
+            height: '6px',
             borderRadius: '50%',
-            backgroundColor: color
+            backgroundColor: dot
           }} />
           {label}
         </span>
@@ -259,6 +297,57 @@
         diagnosis_duration: useRef(null),
         procedure_details: useRef(null)
       };
+
+      const dashboardTokens = {
+        pageBg: '#f7f5f2',
+        surface: '#ffffff',
+        surfaceAlt: '#fbfaf8',
+        border: '#ebe7e1',
+        borderStrong: '#e0dbd3',
+        shadowSoft: '0 1px 0 rgba(17, 17, 17, 0.04), 0 12px 30px rgba(17, 17, 17, 0.06)',
+        shadow: '0 20px 45px rgba(17, 17, 17, 0.18)',
+        radiusLg: '20px',
+        radiusMd: '16px',
+        radiusSm: '12px',
+        textPrimary: '#1a1a1a',
+        textSecondary: '#5f5f5f',
+        textMuted: '#8f8f8f',
+        brand: '#111111'
+      };
+
+      const dashboardSpacing = {
+        xs: 8,
+        sm: 12,
+        md: 16,
+        lg: 24,
+        xl: 32,
+        xxl: 40
+      };
+
+      const tonePalette = {
+        neutral: { bg: dashboardTokens.surface, text: dashboardTokens.textPrimary, border: dashboardTokens.border },
+        success: { bg: '#eef9f1', text: '#2f6b3c', border: '#d6f0dd' },
+        warning: { bg: '#fff4e5', text: '#8b5a1f', border: '#f0dfc7' },
+        danger: { bg: '#fff0f1', text: '#9b2c2c', border: '#f1c8ce' },
+        info: { bg: '#f3efff', text: '#5531c5', border: '#e0d7fb' }
+      };
+
+      const getInitials = (name = '') => {
+        const parts = name.trim().split(' ').filter(Boolean);
+        return parts.slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'NA';
+      };
+
+      const actionNeededRecords = authRecords.filter(
+        record => record.status === 'Needs Peer-to-Peer' || record.status === 'Denied'
+      );
+      const deniedCount = authRecords.filter(record => record.status === 'Denied').length;
+      const peerToPeerCount = authRecords.filter(record => record.status === 'Needs Peer-to-Peer').length;
+      const dashboardStats = [
+        { label: 'Total Requests', value: authRecords.length, tone: 'neutral' },
+        { label: 'Approved', value: authRecords.filter(record => record.status === 'Approved').length, tone: 'success' },
+        { label: 'Pending', value: authRecords.filter(record => record.status === 'Pending').length, tone: 'warning' },
+        { label: 'Action Needed', value: actionNeededRecords.length, tone: 'danger' }
+      ];
 
       useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -425,141 +514,232 @@
 
       if (currentView === 'dashboard') {
         return (
-          <div style={{ minHeight: '100vh', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-            <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');`}</style>
-            <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e5e5', padding: '20px 32px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <button onClick={startNewAuth} style={{ backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px', lineHeight: 1 }}>+</span> New Authorization
-              </button>
-            </header>
-            <main style={{ padding: '40px 32px', maxWidth: '1200px', margin: '0 auto' }}>
-              <div style={{ marginBottom: '40px' }}>
-                <h1 style={{ margin: '0 0 8px 0', fontSize: '36px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Prior Authorizations</h1>
-                <p style={{ margin: 0, color: '#666', fontSize: '16px' }}>Manage and track your authorization requests</p>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '40px' }}>
-                {[
-                  { label: 'Total Requests', value: authRecords.length },
-                  { label: 'Approved', value: authRecords.filter(r => r.status === 'Approved').length },
-                  { label: 'Pending', value: authRecords.filter(r => r.status === 'Pending').length },
-                  { label: 'Action Needed', value: authRecords.filter(r => r.status === 'Needs Peer-to-Peer' || r.status === 'Denied').length }
-                ].map((stat, i) => (
-                  <div key={i} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e5e5e5' }}>
-                    <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#666' }}>{stat.label}</p>
-                    <p style={{ margin: 0, fontSize: '32px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>{stat.value}</p>
-                  </div>
-                ))}
-              </div>
-              <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e5e5', overflow: 'hidden' }}>
-                <div style={{ padding: '20px 24px', borderBottom: '1px solid #e5e5e5' }}>
-                  <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#1a1a1a' }}>Recent Requests</h2>
-                </div>
+          <div style={{ minHeight: '100vh', backgroundColor: dashboardTokens.pageBg, fontFamily: "'Sofia Pro', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+            <header style={{ backgroundColor: dashboardTokens.surface, borderBottom: `1px solid ${dashboardTokens.border}`, padding: `${dashboardSpacing.lg}px ${dashboardSpacing.xl}px` }}>
+              <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
                 <div>
-                  {authRecords.map((record, i) => {
-                    const hasDetails = (record.status === 'Denied' && record.denial) || (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+                  <p style={{ margin: 0, fontSize: '11px', letterSpacing: '1.2px', textTransform: 'uppercase', color: dashboardTokens.textMuted }}>Dashboard</p>
+                  <h1 style={{ margin: '6px 0 6px 0', fontSize: '32px', fontWeight: '600', color: dashboardTokens.textPrimary, fontFamily: "'Sofia Pro', sans-serif" }}>Prior Authorizations</h1>
+                  <p style={{ margin: 0, color: dashboardTokens.textSecondary, fontSize: '15px' }}>Manage and track your authorization requests</p>
+                </div>
+                <button onClick={startNewAuth} style={{ backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', padding: '14px 26px', borderRadius: '999px', fontWeight: '500', fontSize: '15px', fontFamily: "'Sofia Pro', sans-serif", cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: dashboardTokens.shadowSoft }}>
+                  <span style={{ fontSize: '18px', lineHeight: 1 }}>+</span> New Authorization
+                </button>
+              </div>
+            </header>
+            <main style={{ padding: `${dashboardSpacing.xl}px ${dashboardSpacing.xl}px`, maxWidth: '1200px', margin: '0 auto' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: `${dashboardSpacing.lg}px` }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: `${dashboardSpacing.md}px` }}>
+                  {dashboardStats.map((stat, i) => {
+                    const tone = tonePalette[stat.tone] || tonePalette.neutral;
                     return (
-                      <div key={record.id} onClick={() => hasDetails && setSelectedRecord(record)} style={{ padding: '20px 24px', borderBottom: i < authRecords.length - 1 ? '1px solid #f0f0f0' : 'none', display: 'grid', gridTemplateColumns: '1fr 1.2fr 140px 24px', alignItems: 'center', gap: '16px', cursor: hasDetails ? 'pointer' : 'default', transition: 'background-color 0.15s ease', backgroundColor: 'white' }} onMouseEnter={(e) => hasDetails && (e.currentTarget.style.backgroundColor = '#fafafa')} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}>
-                        <div>
-                          <p style={{ margin: 0, fontWeight: '500', color: '#1a1a1a', fontSize: '15px' }}>{record.patientName}</p>
-                          <p style={{ margin: '2px 0 0 0', color: '#999', fontSize: '13px' }}>{record.lastUpdated}</p>
-                        </div>
-                        <div>
-                          <p style={{ margin: 0, color: '#1a1a1a', fontSize: '14px' }}>{record.procedure}</p>
-                          <p style={{ margin: '2px 0 0 0', color: '#999', fontSize: '13px' }}>{record.insurance}</p>
-                        </div>
-                        <div><StatusBadge status={record.status} /></div>
-                        <div style={{ color: '#ccc', fontSize: '18px', textAlign: 'right' }}>{hasDetails ? '→' : ''}</div>
+                      <div key={i} style={{ backgroundColor: tone.bg, borderRadius: dashboardTokens.radiusMd, padding: '20px 22px', border: `1px solid ${tone.border}`, boxShadow: dashboardTokens.shadowSoft }}>
+                        <p style={{ margin: '0 0 8px 0', fontSize: '12px', color: dashboardTokens.textMuted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.6px' }}>{stat.label}</p>
+                        <p style={{ margin: 0, fontSize: '30px', fontWeight: '600', color: tone.text, fontFamily: "'Sofia Pro', sans-serif" }}>{stat.value}</p>
                       </div>
                     );
                   })}
+                </div>
+
+                <div style={{ backgroundColor: dashboardTokens.surface, borderRadius: dashboardTokens.radiusLg, border: `1px solid ${dashboardTokens.border}`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', boxShadow: dashboardTokens.shadowSoft }}>
+                  <div>
+                    <p style={{ margin: 0, fontSize: '12px', fontWeight: '600', letterSpacing: '0.6px', textTransform: 'uppercase', color: dashboardTokens.textMuted }}>Action Needed</p>
+                    <p style={{ margin: '6px 0 0 0', color: dashboardTokens.textPrimary, fontSize: '16px', fontWeight: '600' }}>
+                      {actionNeededRecords.length === 0 ? 'All caught up.' : `${actionNeededRecords.length} requests need attention.`}
+                    </p>
+                    <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textSecondary, fontSize: '14px' }}>
+                      {actionNeededRecords.length === 0 ? 'No pending peer-to-peer or denied items.' : 'Focus on peer-to-peer reviews and resubmissions.'}
+                    </p>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                      {deniedCount > 0 && (
+                        <span style={{ padding: '6px 10px', borderRadius: '999px', backgroundColor: tonePalette.danger.bg, color: tonePalette.danger.text, border: `1px solid ${tonePalette.danger.border}`, fontSize: '12px', fontWeight: '600' }}>Denied {deniedCount}</span>
+                      )}
+                      {peerToPeerCount > 0 && (
+                        <span style={{ padding: '6px 10px', borderRadius: '999px', backgroundColor: tonePalette.info.bg, color: tonePalette.info.text, border: `1px solid ${tonePalette.info.border}`, fontSize: '12px', fontWeight: '600' }}>Peer-to-Peer {peerToPeerCount}</span>
+                      )}
+                      {actionNeededRecords.length === 0 && (
+                        <span style={{ padding: '6px 10px', borderRadius: '999px', backgroundColor: tonePalette.success.bg, color: tonePalette.success.text, border: `1px solid ${tonePalette.success.border}`, fontSize: '12px', fontWeight: '600' }}>All clear</span>
+                      )}
+                    </div>
+                  </div>
+                  <a href="#recent-requests" style={{ backgroundColor: dashboardTokens.brand, color: 'white', textDecoration: 'none', padding: '12px 20px', borderRadius: '999px', fontWeight: '500', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+                    View queue →
+                  </a>
+                </div>
+
+                <div id="recent-requests" style={{ backgroundColor: dashboardTokens.surface, borderRadius: dashboardTokens.radiusLg, border: `1px solid ${dashboardTokens.border}`, overflow: 'hidden', boxShadow: dashboardTokens.shadowSoft }}>
+                  <div style={{ padding: '18px 24px', borderBottom: `1px solid ${dashboardTokens.border}`, backgroundColor: dashboardTokens.surfaceAlt, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                    <div>
+                      <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: dashboardTokens.textPrimary }}>Recent Requests</h2>
+                      <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>{authRecords.length} total requests</p>
+                    </div>
+                    <span style={{ fontSize: '13px', color: dashboardTokens.textSecondary }}>Last updated today</span>
+                  </div>
+                  <div style={{ padding: '10px 24px', borderBottom: `1px solid ${dashboardTokens.border}`, backgroundColor: dashboardTokens.surfaceAlt }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1.5fr 0.8fr 0.9fr', gap: '16px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.6px', color: dashboardTokens.textMuted }}>
+                      <span>Patient</span>
+                      <span>Procedure</span>
+                      <span>Status</span>
+                      <span style={{ textAlign: 'right' }}>Action</span>
+                    </div>
+                  </div>
+                  <div>
+                    {authRecords.map((record, i) => {
+                      const hasDetails = (record.status === 'Denied' && record.denial) || (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+                      return (
+                        <div
+                          key={record.id}
+                          onClick={() => hasDetails && setSelectedRecord(record)}
+                          style={{
+                            padding: '18px 24px',
+                            borderBottom: i < authRecords.length - 1 ? `1px solid ${dashboardTokens.border}` : 'none',
+                            display: 'grid',
+                            gridTemplateColumns: '1.4fr 1.5fr 0.8fr 0.9fr',
+                            alignItems: 'center',
+                            gap: '16px',
+                            cursor: hasDetails ? 'pointer' : 'default',
+                            transition: 'background-color 0.15s ease',
+                            backgroundColor: dashboardTokens.surface
+                          }}
+                          onMouseEnter={(e) => hasDetails && (e.currentTarget.style.backgroundColor = dashboardTokens.surfaceAlt)}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = dashboardTokens.surface)}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                            <div style={{ width: '38px', height: '38px', borderRadius: '12px', backgroundColor: dashboardTokens.surfaceAlt, border: `1px solid ${dashboardTokens.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600', fontSize: '12px', color: dashboardTokens.textSecondary }}>
+                              {getInitials(record.patientName)}
+                            </div>
+                            <div>
+                              <p style={{ margin: 0, fontWeight: '600', color: dashboardTokens.textPrimary, fontSize: '15px' }}>{record.patientName}</p>
+                              <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>Updated {record.lastUpdated}</p>
+                            </div>
+                          </div>
+                          <div>
+                            <p style={{ margin: 0, color: dashboardTokens.textPrimary, fontSize: '14px', fontWeight: '500' }}>{record.procedure}</p>
+                            <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textMuted, fontSize: '13px' }}>{record.insurance}</p>
+                          </div>
+                          <div><StatusBadge status={record.status} /></div>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            {hasDetails ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedRecord(record);
+                                }}
+                                style={{
+                                  backgroundColor: dashboardTokens.surface,
+                                  border: `1px solid ${dashboardTokens.borderStrong}`,
+                                  color: dashboardTokens.textPrimary,
+                                  padding: '8px 14px',
+                                  borderRadius: '999px',
+                                  fontSize: '13px',
+                                  fontWeight: '500',
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '6px'
+                                }}
+                              >
+                                View details →
+                              </button>
+                            ) : (
+                              <span style={{ color: dashboardTokens.textMuted, fontSize: '13px' }}>No action</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </main>
 
             {selectedRecord && (
-              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-                <div style={{ backgroundColor: 'white', borderRadius: '20px', width: '100%', maxWidth: '560px', maxHeight: '90vh', overflow: 'auto' }}>
-                  <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(17,17,17,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+                <div style={{ backgroundColor: dashboardTokens.surface, borderRadius: dashboardTokens.radiusLg, width: '100%', maxWidth: '560px', maxHeight: '90vh', overflow: 'auto', border: `1px solid ${dashboardTokens.border}`, boxShadow: dashboardTokens.shadow }}>
+                  <div style={{ padding: '22px 24px', borderBottom: `1px solid ${dashboardTokens.border}`, backgroundColor: dashboardTokens.surfaceAlt, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
                     <div>
-                      <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>{selectedRecord.patientName}</h2>
-                      <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedRecord.procedure} • {selectedRecord.insurance}</p>
+                      <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', fontWeight: '600', color: dashboardTokens.textPrimary, fontFamily: "'Sofia Pro', sans-serif" }}>{selectedRecord.patientName}</h2>
+                      <p style={{ margin: 0, color: dashboardTokens.textSecondary, fontSize: '14px' }}>{selectedRecord.procedure} • {selectedRecord.insurance}</p>
                     </div>
-                    <button onClick={() => setSelectedRecord(null)} style={{ backgroundColor: '#f5f5f5', border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <StatusBadge status={selectedRecord.status} />
+                      <button onClick={() => setSelectedRecord(null)} style={{ backgroundColor: dashboardTokens.surface, border: `1px solid ${dashboardTokens.border}`, width: '34px', height: '34px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', color: dashboardTokens.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+                    </div>
                   </div>
 
                   {selectedRecord.status === 'Denied' && selectedRecord.denial && (
                     <div>
-                      <div style={{ backgroundColor: '#fef2f2', padding: '20px 24px', borderBottom: '1px solid #fecaca' }}>
-                        <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: '#dc2626', fontSize: '14px' }}>Denial Code: {selectedRecord.denial.denialCode}</p>
-                        <p style={{ margin: 0, color: '#991b1b', fontSize: '15px', lineHeight: '1.6' }}>{selectedRecord.denial.denialReason}</p>
-                        <p style={{ margin: '12px 0 0 0', color: '#dc2626', fontSize: '14px', fontWeight: '500' }}>Appeal Deadline: {selectedRecord.denial.appealDeadline}</p>
+                      <div style={{ backgroundColor: tonePalette.danger.bg, padding: '20px 24px', borderBottom: `1px solid ${tonePalette.danger.border}` }}>
+                        <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: tonePalette.danger.text, fontSize: '14px' }}>Denial Code: {selectedRecord.denial.denialCode}</p>
+                        <p style={{ margin: 0, color: dashboardTokens.textSecondary, fontSize: '15px', lineHeight: '1.6' }}>{selectedRecord.denial.denialReason}</p>
+                        <p style={{ margin: '12px 0 0 0', color: tonePalette.danger.text, fontSize: '14px', fontWeight: '500' }}>Appeal Deadline: {selectedRecord.denial.appealDeadline}</p>
                       </div>
-                      <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5' }}>
-                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Required for Resubmission</h3>
+                      <div style={{ padding: '24px', borderBottom: `1px solid ${dashboardTokens.border}` }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Required for Resubmission</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                           {selectedRecord.denial.requiredForResubmission.map((item, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                              <span style={{ minWidth: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#f5f5f5', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600' }}>{i + 1}</span>
-                              <span style={{ fontSize: '15px', color: '#1a1a1a', lineHeight: '1.5' }}>{item}</span>
+                              <span style={{ minWidth: '24px', height: '24px', borderRadius: '50%', backgroundColor: dashboardTokens.surfaceAlt, color: dashboardTokens.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', border: `1px solid ${dashboardTokens.border}` }}>{i + 1}</span>
+                              <span style={{ fontSize: '15px', color: dashboardTokens.textPrimary, lineHeight: '1.5' }}>{item}</span>
                             </div>
                           ))}
                         </div>
                       </div>
-                      <div style={{ padding: '24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5' }}>
+                      <div style={{ padding: '24px', backgroundColor: dashboardTokens.surfaceAlt, borderBottom: `1px solid ${dashboardTokens.border}` }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                          <h3 style={{ margin: 0, fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dispute Call Script</h3>
-                          <a href={`tel:${selectedRecord.denial.phoneNumber}`} style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '10px 20px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '14px' }}>{selectedRecord.denial.phoneNumber}</a>
+                          <h3 style={{ margin: 0, fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dispute Call Script</h3>
+                          <a href={`tel:${selectedRecord.denial.phoneNumber}`} style={{ backgroundColor: dashboardTokens.brand, color: 'white', padding: '10px 20px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '14px' }}>{selectedRecord.denial.phoneNumber}</a>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           {selectedRecord.denial.disputeScript.map((point, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
-                              <span style={{ color: '#1a1a1a', fontWeight: '600', fontSize: '14px' }}>{i + 1}.</span>
-                              <span style={{ fontSize: '14px', color: '#1a1a1a', lineHeight: '1.5' }}>{point}</span>
+                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: dashboardTokens.surface, borderRadius: '12px', border: `1px solid ${dashboardTokens.border}` }}>
+                              <span style={{ color: dashboardTokens.textPrimary, fontWeight: '600', fontSize: '14px' }}>{i + 1}.</span>
+                              <span style={{ fontSize: '14px', color: dashboardTokens.textPrimary, lineHeight: '1.5' }}>{point}</span>
                             </div>
                           ))}
                         </div>
-                        <p style={{ margin: '16px 0 0 0', fontSize: '13px', color: '#666' }}>Fax additional documentation: {selectedRecord.denial.appealFaxNumber}</p>
+                        <p style={{ margin: '16px 0 0 0', fontSize: '13px', color: dashboardTokens.textSecondary }}>Fax additional documentation: {selectedRecord.denial.appealFaxNumber}</p>
                       </div>
                       <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
-                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: '#1a1a1a', color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Start Resubmission</button>
-                        <button style={{ padding: '14px 20px', backgroundColor: 'white', color: '#1a1a1a', border: '1px solid #e5e5e5', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Download</button>
+                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Start Resubmission</button>
+                        <button style={{ padding: '14px 20px', backgroundColor: dashboardTokens.surface, color: dashboardTokens.textPrimary, border: `1px solid ${dashboardTokens.border}`, borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Download</button>
                       </div>
                     </div>
                   )}
 
                   {selectedRecord.status === 'Needs Peer-to-Peer' && selectedRecord.peerToPeer && (
                     <div>
-                      <div style={{ backgroundColor: '#f3e8ff', padding: '24px', borderBottom: '1px solid #ddd6fe' }}>
-                        <p style={{ margin: '0 0 4px 0', fontWeight: '600', color: '#7c3aed', fontSize: '13px' }}>Peer-to-Peer Review Scheduled</p>
-                        <p style={{ margin: '0 0 8px 0', color: '#5b21b6', fontSize: '22px', fontWeight: '600', fontFamily: "'Playfair Display', serif" }}>{selectedRecord.peerToPeer.scheduledDate} at {selectedRecord.peerToPeer.scheduledTime}</p>
-                        <p style={{ margin: 0, color: '#7c3aed', fontSize: '15px' }}>{selectedRecord.peerToPeer.reviewerName}, {selectedRecord.peerToPeer.reviewerSpecialty}</p>
-                        <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '13px' }}>Case #{selectedRecord.peerToPeer.caseNumber}</p>
+                      <div style={{ backgroundColor: tonePalette.info.bg, padding: '24px', borderBottom: `1px solid ${tonePalette.info.border}` }}>
+                        <p style={{ margin: '0 0 4px 0', fontWeight: '600', color: tonePalette.info.text, fontSize: '13px' }}>Peer-to-Peer Review Scheduled</p>
+                        <p style={{ margin: '0 0 8px 0', color: tonePalette.info.text, fontSize: '22px', fontWeight: '600', fontFamily: "'Sofia Pro', sans-serif" }}>{selectedRecord.peerToPeer.scheduledDate} at {selectedRecord.peerToPeer.scheduledTime}</p>
+                        <p style={{ margin: 0, color: dashboardTokens.textPrimary, fontSize: '15px' }}>{selectedRecord.peerToPeer.reviewerName}, {selectedRecord.peerToPeer.reviewerSpecialty}</p>
+                        <p style={{ margin: '4px 0 0 0', color: dashboardTokens.textSecondary, fontSize: '13px' }}>Case #{selectedRecord.peerToPeer.caseNumber}</p>
                       </div>
-                      <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5' }}>
-                        <h3 style={{ margin: '0 0 12px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Summary</h3>
-                        <p style={{ margin: 0, fontSize: '15px', color: '#1a1a1a', lineHeight: '1.6' }}>{selectedRecord.peerToPeer.clinicalNotes}</p>
+                      <div style={{ padding: '24px', borderBottom: `1px solid ${dashboardTokens.border}` }}>
+                        <h3 style={{ margin: '0 0 12px 0', fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Summary</h3>
+                        <p style={{ margin: 0, fontSize: '15px', color: dashboardTokens.textPrimary, lineHeight: '1.6' }}>{selectedRecord.peerToPeer.clinicalNotes}</p>
                       </div>
-                      <div style={{ padding: '24px', backgroundColor: '#fafafa', borderBottom: '1px solid #e5e5e5' }}>
-                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Talking Points</h3>
+                      <div style={{ padding: '24px', backgroundColor: dashboardTokens.surfaceAlt, borderBottom: `1px solid ${dashboardTokens.border}` }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '11px', fontWeight: '600', color: dashboardTokens.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Talking Points</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           {selectedRecord.peerToPeer.talkingPoints.map((point, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
-                              <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600' }}>✓</span>
-                              <span style={{ fontSize: '14px', color: '#1a1a1a', lineHeight: '1.5' }}>{point}</span>
+                            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px', backgroundColor: dashboardTokens.surface, borderRadius: '12px', border: `1px solid ${dashboardTokens.border}` }}>
+                              <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', backgroundColor: tonePalette.success.bg, color: tonePalette.success.text, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '600', border: `1px solid ${tonePalette.success.border}` }}>✓</span>
+                              <span style={{ fontSize: '14px', color: dashboardTokens.textPrimary, lineHeight: '1.5' }}>{point}</span>
                             </div>
                           ))}
                         </div>
                       </div>
-                      <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ padding: '24px', borderBottom: `1px solid ${dashboardTokens.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div>
-                          <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: '#1a1a1a' }}>Join Peer-to-Peer Call</p>
-                          <p style={{ margin: 0, fontSize: '13px', color: '#666' }}>Dial-in for scheduled review</p>
+                          <p style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: '500', color: dashboardTokens.textPrimary }}>Join Peer-to-Peer Call</p>
+                          <p style={{ margin: 0, fontSize: '13px', color: dashboardTokens.textSecondary }}>Dial-in for scheduled review</p>
                         </div>
-                        <a href={`tel:${selectedRecord.peerToPeer.phoneNumber}`} style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>{selectedRecord.peerToPeer.phoneNumber}</a>
+                        <a href={`tel:${selectedRecord.peerToPeer.phoneNumber}`} style={{ backgroundColor: dashboardTokens.brand, color: 'white', padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>{selectedRecord.peerToPeer.phoneNumber}</a>
                       </div>
                       <div style={{ padding: '24px', display: 'flex', gap: '12px' }}>
-                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: '#1a1a1a', color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Add to Calendar</button>
-                        <button style={{ padding: '14px 20px', backgroundColor: 'white', color: '#1a1a1a', border: '1px solid #e5e5e5', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Print</button>
+                        <button style={{ flex: 1, padding: '14px 20px', backgroundColor: dashboardTokens.brand, color: 'white', border: 'none', borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Add to Calendar</button>
+                        <button style={{ padding: '14px 20px', backgroundColor: dashboardTokens.surface, color: dashboardTokens.textPrimary, border: `1px solid ${dashboardTokens.border}`, borderRadius: '100px', fontWeight: '500', fontSize: '15px', cursor: 'pointer' }}>Print</button>
                       </div>
                     </div>
                   )}
@@ -571,9 +751,8 @@
       }
 
       return (
-        <div style={{ height: step === 3 && !allIssuesResolved() ? '100vh' : 'auto', minHeight: step === 3 && !allIssuesResolved() ? 'auto' : '100vh', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'auto', backgroundColor: '#fafafa', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", display: 'flex', flexDirection: 'column' }}>
+        <div style={{ height: step === 3 && !allIssuesResolved() ? '100vh' : 'auto', minHeight: step === 3 && !allIssuesResolved() ? 'auto' : '100vh', overflow: step === 3 && !allIssuesResolved() ? 'hidden' : 'auto', backgroundColor: '#fafafa', fontFamily: "'Sofia Pro', -apple-system, BlinkMacSystemFont, sans-serif", display: 'flex', flexDirection: 'column' }}>
           <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
 
@@ -601,7 +780,7 @@
 
             {step === 1 && (
               <div>
-                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Upload Visit Notes</h1>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Upload Visit Notes</h1>
                 <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Enter patient information and upload clinical documentation.</p>
                 <div style={{ marginBottom: '24px' }}>
                   <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#1a1a1a' }}>Patient Name</label>
@@ -650,7 +829,7 @@
 
             {step === 2 && (
               <div>
-                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Select Insurance</h1>
+                <h1 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '500', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Select Insurance</h1>
                 <p style={{ margin: '0 0 32px 0', color: '#666', fontSize: '16px' }}>Choose the patient's insurance provider.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
                   {['Medicare', 'UnitedHealthcare', 'Aetna', 'Blue Cross'].map(insurance => (
@@ -681,7 +860,7 @@
               <div style={{ display: 'flex', height: '100%' }}>
                 <div style={{ width: '400px', flexShrink: 0, backgroundColor: 'white', borderRight: '1px solid #e5e5e5', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', flexShrink: 0 }}>
-                    <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Complete Details</h2>
+                    <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Complete Details</h2>
                     <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{selectedInsurance} • {Object.values(documentData).filter(v => v !== null).length}/{documentQuestions.length} complete</p>
                   </div>
                   {isAnalyzing ? (
@@ -709,7 +888,7 @@
                 <div style={{ flex: 1, backgroundColor: '#fafafa', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                   <div style={{ padding: '24px', borderBottom: '1px solid #e5e5e5', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                     <div>
-                      <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Playfair Display', serif" }}>Clinical Documentation</h2>
+                      <h2 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1a1a1a', fontFamily: "'Sofia Pro', sans-serif" }}>Clinical Documentation</h2>
                       <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Updates in real-time as you respond</p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#f0fdf4', borderRadius: '100px' }}>
@@ -783,7 +962,7 @@
                     </button>
                     {(!section.expandable || expandedSection === i) && (
                       <div style={{ padding: '20px 24px' }}>
-                        {section.type === 'text' && <pre style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '14px', lineHeight: '1.7', color: '#1a1a1a', whiteSpace: 'pre-wrap' }}>{section.content}</pre>}
+                        {section.type === 'text' && <pre style={{ margin: 0, fontFamily: "'Sofia Pro', sans-serif", fontSize: '14px', lineHeight: '1.7', color: '#1a1a1a', whiteSpace: 'pre-wrap' }}>{section.content}</pre>}
                         {section.type === 'codes' && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {section.content.map((code, j) => (

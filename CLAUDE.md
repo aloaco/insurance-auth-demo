@@ -43,6 +43,40 @@ PriorAuthDemo (main component)
     └── Step 3: Split-pane chat interface + live document preview
 ```
 
+### Component + Styling Map (index.html line refs)
+
+Line numbers below are from the current `index.html` snapshot and will shift if code moves.
+
+- **HTML shell + root mount**: lines 1-25 (CDN scripts, minimal CSS reset in `<style>`)
+- **Global CSS reset**: lines 11-20 (box-sizing + body margin/padding)
+- **Data constants**:
+  - `initialAuthRecords`: lines 28-84
+  - `documentQuestions`: lines 86-90
+- **UI subcomponents (inline styling in JSX)**:
+  - `StatusBadge`: lines 92-119
+  - `LoadingSpinner`: lines 121-133 (includes `@keyframes spin` in a `<style>` tag)
+  - `ChatMessage`: lines 135-155 (includes `@keyframes fadeIn` in a `<style>` tag)
+  - `TypingIndicator`: lines 157-189 (includes `@keyframes bounce` in a `<style>` tag)
+  - `DocumentSection`: lines 191-227
+- **`PriorAuthDemo` main component**: lines 229-821
+  - State, refs, effects, handlers: lines 229-425
+  - **Dashboard view** render: lines 426-571
+    - Font import (`Playfair Display`, `Inter`): line 429
+    - Header + stats cards + record list: lines 430-477
+    - Detail modal shell: lines 479-568
+      - Denial detail view: lines 490-528
+      - Peer-to-peer detail view: lines 530-565
+  - **New Auth view** render: lines 573-819
+    - Font import + `@keyframes spin`: lines 575-578
+    - Stepper header: lines 580-598
+    - Step 1 (Upload): lines 602-648
+    - Step 2 (Insurance): lines 651-677
+    - Step 3 (Details split view):
+      - Chat panel: lines 680-708
+      - Document preview: lines 709-742 (uses `DocumentSection`)
+    - Step 3 (Review/results): lines 746-816 (summary cards + submit)
+- **React mount**: line 823
+
 ## Deployment
 
 The `.gitignore` includes `.vercel`, indicating Vercel deployment. The single HTML file can be deployed to any static hosting.
