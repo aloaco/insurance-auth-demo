@@ -1,3 +1,5 @@
+import { IconChevronDown, IconChevronUp, IconPhone } from '@tabler/icons-react';
+import { useState } from 'react';
 import StatusBadge from '../components/StatusBadge';
 
 const STATUS_ORDER = {
@@ -7,11 +9,29 @@ const STATUS_ORDER = {
   Approved: 3
 };
 
+const getNextLocalDateString = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 function DetailModal({ record, onClose }) {
   if (!record) return null;
 
   const isDenied = record.status === 'Denied' && record.denial;
   const isPeerReview = record.status === 'Needs Peer-to-Peer' && record.peerToPeer;
+  const [showChecklist, setShowChecklist] = useState(false);
+  const [showDisputeScript, setShowDisputeScript] = useState(false);
+  const [showPeerTalkingPoints, setShowPeerTalkingPoints] = useState(false);
+  const checklistItems = record?.denial?.requiredForResubmission || [];
+  const peerTalkingPoints = record?.peerToPeer?.talkingPoints || [];
+  const checklistId = `resubmission-checklist-${record.id}`;
+  const disputeScriptId = `dispute-script-${record.id}`;
+  const peerTalkingPointsId = `peer-talking-points-${record.id}`;
+  const nextDayDate = getNextLocalDateString();
 
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-[rgba(17,17,17,0.45)] px-5 py-6">
@@ -26,7 +46,7 @@ function DetailModal({ record, onClose }) {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <StatusBadge status={record.status} />
+            {!isDenied && !isPeerReview && <StatusBadge status={record.status} />}
             <button
               onClick={onClose}
               className="flex h-[34px] w-[34px] items-center justify-center rounded-full border border-[#ebe7e1] bg-white text-[20px] text-[#5f5f5f]"
@@ -39,90 +59,163 @@ function DetailModal({ record, onClose }) {
         {isDenied && (
           <div>
             <div className="border-b border-[#f1c8ce] bg-white px-6 py-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.6px] text-[#9b2c2c]">
+                    Denied - Action Required
+                  </p>
+                  <p className="mt-2 text-[14px] text-[#7a2c2c]">
+                    Appeal deadline: {nextDayDate}
+                  </p>
+                </div>
+                <button className="rounded-full bg-[#111111] px-5 py-[12px] text-[14px] font-normal text-white">
+                  Start Resubmission
+                </button>
+              </div>
+            </div>
+            <div className="border-b border-[#f1c8ce] bg-white px-6 py-5">
+              <p className="mb-2 text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
+                Denial Details
+              </p>
               <p className="mb-2 text-[14px] font-normal text-[#9b2c2c]">
                 Denial Code: {record.denial.denialCode}
               </p>
               <p className="text-[15px] leading-[1.6] text-[#5f5f5f]">
                 {record.denial.denialReason}
               </p>
-              <p className="mt-3 text-[14px] font-normal text-[#9b2c2c]">
-                Appeal Deadline: {record.denial.appealDeadline}
-              </p>
             </div>
             <div className="border-b border-[#ebe7e1] px-6 py-6">
-              <h3 className="mb-4 text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
-                Required for Resubmission
-              </h3>
-              <div className="flex flex-col gap-3">
-                {record.denial.requiredForResubmission.map((item, index) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full border border-[#ebe7e1] bg-white text-[11px] text-[#5f5f5f]">
-                      {index + 1}
-                    </span>
-                    <span className="text-[15px] leading-[1.5] text-[#1a1a1a]">
-                      {item}
-                    </span>
-                  </div>
-                ))}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
+                    Resubmission Checklist
+                  </h3>
+                  <p className="mt-2 text-[14px] text-[#5f5f5f]">
+                    To resubmit, gather the following {checklistItems.length} items.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowChecklist((previous) => !previous)}
+                  className="rounded-full border border-[#ebe7e1] bg-white px-4 py-2 text-[13px] font-normal text-[#1a1a1a]"
+                  aria-expanded={showChecklist}
+                  aria-controls={checklistId}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    {showChecklist ? (
+                      <IconChevronUp size={16} stroke={1.8} aria-hidden="true" />
+                    ) : (
+                      <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                    )}
+                    {showChecklist ? 'Hide checklist' : 'View checklist'}
+                  </span>
+                </button>
               </div>
+              {showChecklist && (
+                <div id={checklistId} className="mt-4 flex flex-col gap-3">
+                  {checklistItems.map((item, index) => (
+                    <div key={item} className="flex items-start gap-3">
+                      <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full border border-[#ebe7e1] bg-white text-[11px] text-[#5f5f5f]">
+                        {index + 1}
+                      </span>
+                      <span className="text-[15px] leading-[1.5] text-[#1a1a1a]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="border-b border-[#ebe7e1] bg-white px-6 py-6">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
-                  Dispute Call Script
-                </h3>
-                <a
-                  href={`tel:${record.denial.phoneNumber}`}
-                  className="rounded-full border border-[#ebe7e1] bg-white px-5 py-2 text-[14px] font-normal text-[#1a1a1a]"
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
+                    Optional: Dispute by phone
+                  </h3>
+                  <p className="mt-2 text-[14px] text-[#5f5f5f]">
+                    Use this script if you choose to call the payer.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowDisputeScript((previous) => !previous)}
+                  className="rounded-full border border-[#ebe7e1] bg-white px-4 py-2 text-[13px] font-normal text-[#1a1a1a]"
+                  aria-expanded={showDisputeScript}
+                  aria-controls={disputeScriptId}
                 >
-                  {record.denial.phoneNumber}
-                </a>
+                  <span className="inline-flex items-center gap-2">
+                    {showDisputeScript ? (
+                      <IconChevronUp size={16} stroke={1.8} aria-hidden="true" />
+                    ) : (
+                      <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                    )}
+                    {showDisputeScript ? 'Hide script' : 'View script'}
+                  </span>
+                </button>
               </div>
-              <div className="flex flex-col gap-3">
-                {record.denial.disputeScript.map((point, index) => (
-                  <div
-                    key={point}
-                    className="flex items-start gap-3 rounded-xl border border-[#ebe7e1] bg-white px-4 py-[14px]"
-                  >
-                    <span className="text-[14px] font-normal text-[#1a1a1a]">
-                      {index + 1}.
-                    </span>
-                    <span className="text-[14px] leading-[1.5] text-[#1a1a1a]">
-                      {point}
-                    </span>
+              {showDisputeScript && (
+                <div id={disputeScriptId} className="mt-4">
+                  <div className="mb-4 flex items-center justify-between">
+                    <p className="text-[13px] font-semibold tracking-[0.2px] text-[#1a1a1a]">
+                      Call script
+                    </p>
+                    <a
+                      href={`tel:${record.denial.phoneNumber}`}
+                      className="inline-flex items-center gap-2 text-[14px] font-normal text-[#1a1a1a]"
+                    >
+                      <IconPhone size={16} stroke={1.8} aria-hidden="true" />
+                      {record.denial.phoneNumber}
+                    </a>
                   </div>
-                ))}
-              </div>
-              <p className="mt-4 text-[13px] text-[#5f5f5f]">
-                Fax additional documentation: {record.denial.appealFaxNumber}
-              </p>
-            </div>
-            <div className="flex gap-3 px-6 py-6">
-              <button className="flex-1 rounded-full bg-[#111111] px-5 py-[14px] text-[15px] font-normal text-white">
-                Start Resubmission
-              </button>
-              <button className="rounded-full border border-[#ebe7e1] bg-white px-5 py-[14px] text-[15px] font-normal text-[#1a1a1a]">
-                Download
-              </button>
+                  <div className="flex flex-col gap-3">
+                    {record.denial.disputeScript.map((point, index) => (
+                      <div
+                        key={point}
+                        className="flex items-start gap-3 rounded-xl border border-[#ebe7e1] bg-white px-4 py-[14px]"
+                      >
+                        <span className="text-[14px] font-normal text-[#1a1a1a]">
+                          {index + 1}.
+                        </span>
+                        <span className="text-[14px] leading-[1.5] text-[#1a1a1a]">
+                          {point}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-[13px] text-[#5f5f5f]">
+                    Fax additional documentation: {record.denial.appealFaxNumber}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
 
         {isPeerReview && (
           <div>
-            <div className="border-b border-[#e0d7fb] bg-white px-6 py-6">
-              <p className="mb-1 text-[13px] font-normal text-[#5531c5]">
-                Peer-to-Peer Review Scheduled
-              </p>
-              <p className="mb-2 text-[22px] font-normal text-[#5531c5]">
-                {record.peerToPeer.scheduledDate} at {record.peerToPeer.scheduledTime}
-              </p>
-              <p className="text-[15px] text-[#1a1a1a]">
-                {record.peerToPeer.reviewerName}, {record.peerToPeer.reviewerSpecialty}
-              </p>
-              <p className="mt-1 text-[13px] text-[#5f5f5f]">
-                Case #{record.peerToPeer.caseNumber}
-              </p>
+            <div className="border-b border-[#e0d7fb] bg-white px-6 py-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.6px] text-[#5531c5]">
+                    Peer-to-Peer Review Scheduled
+                  </p>
+                  <p className="mt-2 text-[20px] font-normal text-[#5531c5]">
+                    {nextDayDate} at {record.peerToPeer.scheduledTime}
+                  </p>
+                  <p className="mt-2 text-[14px] text-[#1a1a1a]">
+                    {record.peerToPeer.reviewerName}, {record.peerToPeer.reviewerSpecialty}
+                  </p>
+                  <p className="mt-1 text-[13px] text-[#5f5f5f]">
+                    Case #{record.peerToPeer.caseNumber}
+                  </p>
+                </div>
+                <a
+                  href={`tel:${record.peerToPeer.phoneNumber}`}
+                  className="rounded-full bg-[#111111] px-5 py-[12px] text-[14px] font-normal text-white"
+                >
+                  Join Peer-to-Peer Call
+                </a>
+              </div>
             </div>
             <div className="border-b border-[#ebe7e1] px-6 py-6">
               <h3 className="mb-3 text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
@@ -133,48 +226,49 @@ function DetailModal({ record, onClose }) {
               </p>
             </div>
             <div className="border-b border-[#ebe7e1] bg-white px-6 py-6">
-              <h3 className="mb-4 text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
-                Talking Points
-              </h3>
-              <div className="flex flex-col gap-3">
-                {record.peerToPeer.talkingPoints.map((point) => (
-                  <div
-                    key={point}
-                    className="flex items-start gap-3 rounded-xl border border-[#ebe7e1] bg-white px-4 py-[14px]"
-                  >
-                    <span className="flex h-[22px] min-w-[22px] items-center justify-center rounded-full border border-[#d6f0dd] bg-white text-[12px] font-normal text-[#2f6b3c]">
-                      ✓
-                    </span>
-                    <span className="text-[14px] leading-[1.5] text-[#1a1a1a]">
-                      {point}
-                    </span>
-                  </div>
-                ))}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-[11px] font-normal uppercase tracking-[0.5px] text-[#8f8f8f]">
+                    Talking Points
+                  </h3>
+                  <p className="mt-2 text-[14px] text-[#5f5f5f]">
+                    Review {peerTalkingPoints.length} points before the call.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPeerTalkingPoints((previous) => !previous)}
+                  className="rounded-full border border-[#ebe7e1] bg-white px-4 py-2 text-[13px] font-normal text-[#1a1a1a]"
+                  aria-expanded={showPeerTalkingPoints}
+                  aria-controls={peerTalkingPointsId}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    {showPeerTalkingPoints ? (
+                      <IconChevronUp size={16} stroke={1.8} aria-hidden="true" />
+                    ) : (
+                      <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                    )}
+                    {showPeerTalkingPoints ? 'Hide points' : 'View points'}
+                  </span>
+                </button>
               </div>
-            </div>
-            <div className="flex items-center justify-between border-b border-[#ebe7e1] px-6 py-6">
-              <div>
-                <p className="text-[15px] font-normal text-[#1a1a1a]">
-                  Join Peer-to-Peer Call
-                </p>
-                <p className="text-[13px] text-[#5f5f5f]">
-                  Dial-in for scheduled review
-                </p>
-              </div>
-              <a
-                href={`tel:${record.peerToPeer.phoneNumber}`}
-                className="rounded-full border border-[#ebe7e1] bg-white px-6 py-3 text-[15px] font-normal text-[#1a1a1a]"
-              >
-                {record.peerToPeer.phoneNumber}
-              </a>
-            </div>
-            <div className="flex gap-3 px-6 py-6">
-              <button className="flex-1 rounded-full bg-[#111111] px-5 py-[14px] text-[15px] font-normal text-white">
-                Add to Calendar
-              </button>
-              <button className="rounded-full border border-[#ebe7e1] bg-white px-5 py-[14px] text-[15px] font-normal text-[#1a1a1a]">
-                Print
-              </button>
+              {showPeerTalkingPoints && (
+                <div id={peerTalkingPointsId} className="mt-4 flex flex-col gap-3">
+                  {peerTalkingPoints.map((point) => (
+                    <div
+                      key={point}
+                      className="flex items-start gap-3 rounded-xl border border-[#ebe7e1] bg-white px-4 py-[14px]"
+                    >
+                      <span className="flex h-[22px] min-w-[22px] items-center justify-center rounded-full border border-[#d6f0dd] bg-white text-[12px] font-normal text-[#2f6b3c]">
+                        ✓
+                      </span>
+                      <span className="text-[14px] leading-[1.5] text-[#1a1a1a]">
+                        {point}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -259,9 +353,8 @@ export default function DashboardView({
                   <div
                     key={record.id}
                     onClick={() => hasDetails && setSelectedRecord(record)}
-                    className={`grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 border-b border-[#e5e7eb] px-6 py-[18px] transition-colors last:border-b-0 ${
-                      hasDetails ? 'cursor-pointer' : 'cursor-default'
-                    }`}
+                    className={`grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 border-b border-[#e5e7eb] px-6 py-[18px] transition-colors last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'
+                      }`}
                   >
                     <div>
                       <p className="text-[14px] font-normal text-[#1a1a1a]">

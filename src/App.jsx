@@ -131,6 +131,8 @@ export default function App() {
       'Identifying documentation gaps...',
       'Preparing authorization checklist...'
     ];
+    const stageIntervalMs = 2200;
+    const totalStageDurationMs = stageIntervalMs * stages.length + 500;
     let stageIndex = 0;
     setAnalysisStage(stages[0]);
     const stageInterval = setInterval(() => {
@@ -138,13 +140,13 @@ export default function App() {
       if (stageIndex < stages.length) {
         setAnalysisStage(stages[stageIndex]);
       }
-    }, 1500);
+    }, stageIntervalMs);
     setTimeout(() => {
       clearInterval(stageInterval);
       setIsAnalyzing(false);
       setAnalysisStage('');
       setChatHistory([{ isSystem: true, message: documentQuestions[0].question }]);
-    }, 6500);
+    }, totalStageDurationMs);
   };
 
   const handleChatSubmit = () => {

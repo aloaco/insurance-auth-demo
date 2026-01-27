@@ -1,6 +1,6 @@
+import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 import ChatMessage from '../components/ChatMessage';
 import DocumentSection from '../components/DocumentSection';
-import LoadingSpinner from '../components/LoadingSpinner';
 import TypingIndicator from '../components/TypingIndicator';
 
 const STEPS = ['Upload', 'Insurance', 'Details', 'Review'];
@@ -48,9 +48,8 @@ export default function NewAuthWizard({
 
   return (
     <div
-      className={`flex min-h-screen flex-col bg-[#fafafa] ${
-        isSplitView ? 'h-screen overflow-hidden' : ''
-      }`}
+      className={`flex min-h-screen flex-col bg-[#fafafa] ${isSplitView ? 'h-screen overflow-hidden' : ''
+        }`}
     >
       <div className="bg-[#fafafa] px-8 py-5">
         <div className="mx-auto max-w-[600px]">
@@ -70,18 +69,16 @@ export default function NewAuthWizard({
               return (
                 <div
                   key={label}
-                  className={`flex items-center gap-2 ${
-                    isDone ? 'text-[#22c55e]' : isActive ? 'text-[#1a1a1a]' : 'text-[#ccc]'
-                  }`}
+                  className={`flex items-center gap-2 ${isDone ? 'text-[#22c55e]' : isActive ? 'text-[#1a1a1a]' : 'text-[#ccc]'
+                    }`}
                 >
                   <div
-                    className={`flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-normal ${
-                      isDone
+                    className={`flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-normal ${isDone
                         ? 'bg-[#22c55e] text-white'
                         : isActive
                           ? 'bg-[#1a1a1a] text-white'
                           : 'bg-[#e5e5e5] text-[#999]'
-                    }`}
+                      }`}
                   >
                     {isDone ? '✓' : stepNumber}
                   </div>
@@ -100,11 +97,10 @@ export default function NewAuthWizard({
       </div>
 
       <main
-        className={`mx-auto ${
-          isSplitView
+        className={`mx-auto ${isSplitView
             ? 'flex h-full w-full max-w-none flex-1 overflow-hidden p-0'
             : 'w-full max-w-[600px] px-8 py-10'
-        }`}
+          }`}
       >
         {step === 1 && (
           <div>
@@ -155,9 +151,8 @@ export default function NewAuthWizard({
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onClick={() => simulateFileUpload()}
-                  className={`cursor-pointer rounded-2xl border bg-white px-6 py-12 text-center ${
-                    isDragging ? 'border-2 border-dashed border-[#1a1a1a]' : 'border-dashed border-[#ccc]'
-                  }`}
+                  className={`cursor-pointer rounded-2xl border bg-white px-6 py-12 text-center ${isDragging ? 'border-2 border-dashed border-[#1a1a1a]' : 'border-dashed border-[#ccc]'
+                    }`}
                 >
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
                     <svg
@@ -241,9 +236,8 @@ export default function NewAuthWizard({
                   <button
                     key={insurance}
                     onClick={() => setSelectedInsurance(insurance)}
-                    className={`flex w-full items-center justify-between rounded-2xl bg-white px-6 py-5 text-left ${
-                      isSelected ? 'border-2 border-[#1a1a1a]' : 'border border-[#e5e5e5]'
-                    }`}
+                    className={`flex w-full items-center justify-between rounded-2xl bg-white px-6 py-5 text-left ${isSelected ? 'border-2 border-[#1a1a1a]' : 'border border-[#e5e5e5]'
+                      }`}
                   >
                     <div>
                       <p className="text-[16px] font-normal text-[#1a1a1a]">{insurance}</p>
@@ -255,9 +249,8 @@ export default function NewAuthWizard({
                       </p>
                     </div>
                     <div
-                      className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
-                        isSelected ? 'border-[#1a1a1a] bg-[#1a1a1a]' : 'border-[#e5e5e5] bg-white'
-                      }`}
+                      className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${isSelected ? 'border-[#1a1a1a] bg-[#1a1a1a]' : 'border-[#e5e5e5] bg-white'
+                        }`}
                     >
                       {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
                     </div>
@@ -275,11 +268,10 @@ export default function NewAuthWizard({
               <button
                 onClick={handleAnalysis}
                 disabled={!selectedInsurance}
-                className={`flex-[2] rounded-full px-6 py-4 text-[16px] font-normal ${
-                  selectedInsurance
+                className={`flex-[2] rounded-full px-6 py-4 text-[16px] font-normal ${selectedInsurance
                     ? 'cursor-pointer bg-[#1a1a1a] text-white'
                     : 'cursor-not-allowed bg-[#e5e5e5] text-[#999]'
-                }`}
+                  }`}
               >
                 Continue
               </button>
@@ -297,12 +289,15 @@ export default function NewAuthWizard({
                 </p>
               </div>
               {isAnalyzing ? (
-                <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-                  <LoadingSpinner />
-                  <p className="mt-5 text-[16px] font-normal text-[#1a1a1a]">
-                    {analysisStage || 'Analyzing documentation...'}
-                  </p>
-                  <p className="mt-1 text-[14px] text-[#666]">This may take a moment</p>
+                <div className="flex-1 overflow-y-auto p-6">
+                  <ChatMessage
+                    isSystem
+                    message={
+                      <span className="shimmer-text">
+                        {analysisStage || 'Analyzing documentation...'}
+                      </span>
+                    }
+                  />
                 </div>
               ) : (
                 <>
@@ -324,18 +319,16 @@ export default function NewAuthWizard({
                         }
                         placeholder={isTyping ? 'Processing...' : 'Type your response...'}
                         disabled={isTyping}
-                        className={`flex-1 rounded-full border border-[#e5e5e5] px-[18px] py-[14px] text-[15px] outline-none ${
-                          isTyping ? 'bg-white text-[#999]' : 'bg-white text-[#1a1a1a]'
-                        }`}
+                        className={`flex-1 rounded-full border border-[#e5e5e5] px-[18px] py-[14px] text-[15px] outline-none ${isTyping ? 'bg-white text-[#999]' : 'bg-white text-[#1a1a1a]'
+                          }`}
                       />
                       <button
                         onClick={handleChatSubmit}
                         disabled={!userInput.trim() || isTyping}
-                        className={`rounded-full px-6 py-[14px] text-[15px] font-normal ${
-                          !userInput.trim() || isTyping
+                        className={`rounded-full px-6 py-[14px] text-[15px] font-normal ${!userInput.trim() || isTyping
                             ? 'cursor-not-allowed bg-[#e5e5e5] text-[#999]'
                             : 'bg-[#1a1a1a] text-white'
-                        }`}
+                          }`}
                       >
                         Send
                       </button>
@@ -352,9 +345,6 @@ export default function NewAuthWizard({
                     Clinical Documentation
                   </h2>
                   <p className="text-[14px] text-[#666]">Updates in real-time as you respond</p>
-                </div>
-                <div className="flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-white px-3 py-1.5">
-                  <span className="text-[13px] font-normal text-[#166534]">Live</span>
                 </div>
               </div>
               <div ref={docScrollRef} className="flex-1 overflow-y-auto p-6">
@@ -540,20 +530,22 @@ export default function NewAuthWizard({
                     onClick={() =>
                       section.expandable && setExpandedSection(expandedSection === index ? null : index)
                     }
-                    className={`flex w-full items-center justify-between bg-white px-6 py-[18px] text-left ${
-                      section.expandable ? 'cursor-pointer' : 'cursor-default'
-                    } ${
-                      section.expandable && expandedSection !== index
+                    className={`flex w-full items-center justify-between bg-white px-6 py-[18px] text-left ${section.expandable ? 'cursor-pointer' : 'cursor-default'
+                      } ${section.expandable && expandedSection !== index
                         ? 'border-b-0'
                         : 'border-b border-[#e5e5e5]'
-                    }`}
+                      }`}
                   >
                     <span className="text-[15px] font-normal text-[#1a1a1a]">
                       {section.title}
                     </span>
                     {section.expandable && (
-                      <span className="text-[12px] text-[#666]">
-                        {expandedSection === index ? '▾' : '▸'}
+                      <span className="inline-flex items-center text-[#666]">
+                        {expandedSection === index ? (
+                          <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                        ) : (
+                          <IconChevronRight size={16} stroke={1.8} aria-hidden="true" />
+                        )}
                       </span>
                     )}
                   </button>
@@ -603,9 +595,8 @@ export default function NewAuthWizard({
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className={`flex w-full items-center justify-center gap-2.5 rounded-full px-6 py-[18px] text-[16px] font-normal text-white ${
-                isSubmitting ? 'cursor-not-allowed bg-[#666]' : 'bg-[#1a1a1a]'
-              }`}
+              className={`flex w-full items-center justify-center gap-2.5 rounded-full px-6 py-[18px] text-[16px] font-normal text-white ${isSubmitting ? 'cursor-not-allowed bg-[#666]' : 'bg-[#1a1a1a]'
+                }`}
             >
               {isSubmitting && (
                 <div className="h-[18px] w-[18px] animate-spin rounded-full border-2 border-[rgba(255,255,255,0.3)] border-t-white" />
