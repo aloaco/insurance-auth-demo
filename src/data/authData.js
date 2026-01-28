@@ -1,9 +1,14 @@
 import { getRelativeDate } from '../utils/date';
+import avatarSarahMitchell from '../assets/avatar-sarah-mitchell.png';
+import avatarJamesRodriguez from '../assets/avatar-james-rodriguez.png';
+import avatarEmilyChen from '../assets/avatar-emily-chen.png';
+import avatarRobertKim from '../assets/avatar-robert-kim.png';
 
 export const initialAuthRecords = [
   {
     id: 1,
     patientName: 'Sarah Mitchell',
+    avatar: avatarSarahMitchell,
     insurance: 'UnitedHealthcare',
     status: 'Approved',
     lastUpdated: getRelativeDate(10),
@@ -12,6 +17,7 @@ export const initialAuthRecords = [
   {
     id: 2,
     patientName: 'James Rodriguez',
+    avatar: avatarJamesRodriguez,
     insurance: 'Aetna',
     status: 'Pending',
     lastUpdated: getRelativeDate(7),
@@ -20,6 +26,7 @@ export const initialAuthRecords = [
   {
     id: 3,
     patientName: 'Emily Chen',
+    avatar: avatarEmilyChen,
     insurance: 'Blue Cross',
     status: 'Needs Peer-to-Peer',
     lastUpdated: getRelativeDate(1),
@@ -46,6 +53,7 @@ export const initialAuthRecords = [
   {
     id: 4,
     patientName: 'Robert Kim',
+    avatar: avatarRobertKim,
     insurance: 'Medicare',
     status: 'Denied',
     lastUpdated: getRelativeDate(0),

@@ -1,4 +1,17 @@
-import { IconChevronDown, IconChevronUp, IconPhone } from '@tabler/icons-react';
+import {
+  IconArchive,
+  IconChartBar,
+  IconChevronDown,
+  IconChevronUp,
+  IconLayoutDashboard,
+  IconMenu2,
+  IconPhone,
+  IconPlug,
+  IconSettings,
+  IconX,
+  IconUser,
+  IconUsers
+} from '@tabler/icons-react';
 import { useState } from 'react';
 import StatusBadge from '../components/StatusBadge';
 
@@ -8,6 +21,26 @@ const STATUS_ORDER = {
   Pending: 2,
   Approved: 3
 };
+
+const SIDEBAR_PRIMARY_ITEMS = [
+  { label: 'Dashboard', icon: IconLayoutDashboard, isActive: true },
+  { label: 'Patients', icon: IconUser },
+  { label: 'Team', icon: IconUsers },
+  { label: 'Analytics', icon: IconChartBar },
+  { label: 'Integrations', icon: IconPlug },
+  { label: 'Archive', icon: IconArchive }
+];
+
+const SIDEBAR_FOOTER_ITEMS = [{ label: 'Settings', icon: IconSettings }];
+
+const getInitials = (name = '') =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
 
 const getNextLocalDateString = () => {
   const date = new Date();
@@ -284,119 +317,258 @@ export default function DashboardView({
   setSelectedRecord,
   startNewAuth
 }) {
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const sortedRecords = [...authRecords].sort((a, b) => {
     return (STATUS_ORDER[a.status] ?? 4) - (STATUS_ORDER[b.status] ?? 4);
   });
 
+  const sidebarButtonLayout = isSidebarExpanded
+    ? 'w-full justify-start gap-3 px-4'
+    : 'w-11 justify-center';
+  const sidebarBrandLayout = isSidebarExpanded
+    ? 'w-full justify-start gap-3 px-4'
+    : 'w-10 justify-center';
+  const sidebarTransition = isSidebarExpanded ? 'duration-300' : 'duration-400';
+
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans">
-      <main className="mx-auto max-w-[1200px] px-8 py-8">
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-[15px] font-semibold text-[#1a1a1a]">Prior Authorizations</h1>
-            <button
-              onClick={startNewAuth}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#111111] px-[10px] py-2 text-[13px] font-normal text-white shadow-[0_1px_0_rgba(17,17,17,0.04),_0_12px_30px_rgba(17,17,17,0.06)]"
-            >
-              <span>New Authorization</span>
-            </button>
+      <div className="flex min-h-screen">
+        <aside
+          className={`flex flex-col border-r border-[#ebe7e1] bg-[#fafafa] py-6 transition-[width] ${sidebarTransition} ${isSidebarExpanded
+            ? 'w-[220px] items-stretch px-3'
+            : 'w-[84px] items-center'
+            }`}
+        >
+          <div className={`flex items-center ${sidebarBrandLayout}`}>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#ebe7e1] text-[#1a1a1a]">
+              <span className="text-[16px] font-semibold">P</span>
+            </div>
+            {isSidebarExpanded && (
+              <span className="text-[14px] font-semibold text-[#1a1a1a]">
+                Prior Auth
+              </span>
+            )}
           </div>
-
-          <div className="grid grid-cols-4 gap-4">
-            {dashboardStats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-xl border border-[#e5e7eb] bg-white px-5 py-[18px]"
-              >
-                <div className="mb-2">
-                  <p className="text-[11px] font-normal text-[#6b7280]">{stat.label}</p>
-                </div>
-                <p
-                  className={`mb-[6px] text-[34px] font-semibold leading-none ${stat.valueClassName}`}
+          <div className="mt-10 flex flex-1 flex-col items-center gap-4">
+            {SIDEBAR_PRIMARY_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.isActive;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  aria-label={item.label}
+                  aria-current={isActive ? 'page' : undefined}
+                  aria-disabled={!isActive}
+                  tabIndex={isActive ? 0 : -1}
+                  title={item.label}
+                  className={`flex h-11 items-center rounded-[14px] transition ${sidebarButtonLayout} ${isActive
+                    ? 'cursor-pointer bg-[#111111] text-white shadow-[0_10px_22px_rgba(17,17,17,0.18)]'
+                    : 'cursor-default text-[#8f8f8f]'
+                    }`}
                 >
-                  {stat.value}
-                  <span className="text-[20px] font-normal">{stat.suffix || ''}</span>
-                </p>
-                <p className="text-[11px] text-[#6b7280]">{stat.subtitle}</p>
-              </div>
-            ))}
+                  <Icon size={20} stroke={1.8} />
+                  {isSidebarExpanded && (
+                    <span
+                      className={`text-[13px] font-normal ${isActive ? 'text-white' : 'text-[#6b7280]'
+                        }`}
+                    >
+                      {item.label}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
+          <div className="flex flex-col items-center gap-4 pb-2">
+            {SIDEBAR_FOOTER_ITEMS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  aria-label={item.label}
+                  aria-disabled="true"
+                  tabIndex={-1}
+                  title={item.label}
+                  className={`flex h-11 cursor-default items-center rounded-[14px] text-[#8f8f8f] ${sidebarButtonLayout}`}
+                >
+                  <Icon size={20} stroke={1.8} />
+                  {isSidebarExpanded && (
+                    <span className="text-[13px] font-normal text-[#6b7280]">
+                      {item.label}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </aside>
 
-          <div
-            id="recent-requests"
-            className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white"
-          >
-            <div className="flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]">
-              <div>
-                <h2 className="text-[15px] font-normal text-[#1a1a1a]">Recent Requests</h2>
-                <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                  {authRecords.length} total requests
-                </p>
-              </div>
-              <span className="text-[13px] text-[#5f5f5f]">Last updated today</span>
-            </div>
-            <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
-              <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
-                <span>Patient</span>
-                <span>Procedure</span>
-                <span className="text-left">Status</span>
-                <span className="text-right">Action</span>
-              </div>
-            </div>
-            <div>
-              {sortedRecords.map((record) => {
-                const hasDetails =
-                  (record.status === 'Denied' && record.denial) ||
-                  (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
-
-                return (
-                  <div
-                    key={record.id}
-                    onClick={() => hasDetails && setSelectedRecord(record)}
-                    className={`grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 border-b border-[#e5e7eb] px-6 py-[18px] transition-colors last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="border-b border-[#ebe7e1] bg-[#fafafa]">
+            <div className="mx-auto flex max-w-[1200px] items-center justify-between px-8 py-5">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsSidebarExpanded((previous) => !previous)}
+                  aria-label={isSidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+                  className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#fafafa] text-[#1a1a1a]"
+                >
+                  <span
+                    className={`absolute transition-all duration-300 ${isSidebarExpanded
+                      ? 'scale-90 rotate-90 opacity-0'
+                      : 'scale-100 rotate-0 opacity-100'
                       }`}
                   >
-                    <div>
-                      <p className="text-[14px] font-normal text-[#1a1a1a]">
-                        {record.patientName}
+                    <IconMenu2 size={18} stroke={1.8} />
+                  </span>
+                  <span
+                    className={`absolute transition-all duration-300 ${isSidebarExpanded
+                      ? 'scale-100 rotate-0 opacity-100'
+                      : 'scale-90 -rotate-90 opacity-0'
+                      }`}
+                  >
+                    <IconX size={18} stroke={1.8} />
+                  </span>
+                </button>
+                <h1 className="text-[18px] font-normal text-[#1a1a1a]">Dashboard</h1>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={startNewAuth}
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#111111] px-[10px] py-2 text-[13px] font-normal text-white shadow-[0_1px_0_rgba(17,17,17,0.04),_0_12px_30px_rgba(17,17,17,0.06)]"
+                >
+                  <span>New Authorization</span>
+                </button>
+                <span className="text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
+                  DEMO
+                </span>
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1">
+            <div className="mx-auto max-w-[1200px] px-8 py-8">
+              <div className="flex flex-col gap-6">
+                <div className="grid grid-cols-4 gap-4">
+                  {dashboardStats.map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="rounded-xl border border-[#e5e7eb] bg-white px-5 py-[18px]"
+                    >
+                      <div className="mb-2">
+                        <p className="text-[11px] font-normal text-[#6b7280]">
+                          {stat.label}
+                        </p>
+                      </div>
+                      <p
+                        className={`mb-[6px] text-[34px] font-semibold leading-none ${stat.valueClassName}`}
+                      >
+                        {stat.value}
+                        <span className="text-[20px] font-normal">{stat.suffix || ''}</span>
                       </p>
+                      <p className="text-[11px] text-[#6b7280]">{stat.subtitle}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div
+                  id="recent-requests"
+                  className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white"
+                >
+                  <div className="flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]">
+                    <div>
+                      <h2 className="text-[15px] font-normal text-[#1a1a1a]">
+                        Recent Requests
+                      </h2>
                       <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                        Updated {record.lastUpdated}
+                        {authRecords.length} total requests
                       </p>
                     </div>
-                    <div>
-                      <p className="text-[14px] font-normal text-[#1a1a1a]">
-                        {record.procedure}
-                      </p>
-                      <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                        {record.insurance}
-                      </p>
-                    </div>
-                    <div>
-                      <StatusBadge status={record.status} />
-                    </div>
-                    <div className="flex justify-end">
-                      {hasDetails ? (
-                        <button
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setSelectedRecord(record);
-                          }}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-[#e0dbd3] bg-white px-[14px] py-2 text-[13px] font-normal text-[#1a1a1a]"
-                        >
-                          View details →
-                        </button>
-                      ) : (
-                        <span className="text-[13px] text-[#8f8f8f]">No action</span>
-                      )}
+                    <span className="text-[13px] text-[#5f5f5f]">Last updated today</span>
+                  </div>
+                  <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
+                    <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
+                      <span>Patient</span>
+                      <span>Procedure</span>
+                      <span className="text-left">Status</span>
+                      <span className="text-right">Action</span>
                     </div>
                   </div>
-                );
-              })}
+                  <div>
+                    {sortedRecords.map((record) => {
+                      const hasDetails =
+                        (record.status === 'Denied' && record.denial) ||
+                        (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+
+                      return (
+                        <div
+                          key={record.id}
+                          onClick={() => hasDetails && setSelectedRecord(record)}
+                          className={`grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 border-b border-[#e5e7eb] px-6 py-[18px] transition-colors last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'
+                            }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-[#e5e7eb] bg-[#f3f4f6]">
+                              {record.avatar ? (
+                                <img
+                                  src={record.avatar}
+                                  alt={`${record.patientName} avatar`}
+                                  className="h-full w-full object-cover object-center"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-[12px] font-semibold text-[#6b7280]">
+                                  {getInitials(record.patientName)}
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-[14px] font-normal text-[#1a1a1a]">
+                                {record.patientName}
+                              </p>
+                              <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                                Updated {record.lastUpdated}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-[14px] font-normal text-[#1a1a1a]">
+                              {record.procedure}
+                            </p>
+                            <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                              {record.insurance}
+                            </p>
+                          </div>
+                          <div>
+                            <StatusBadge status={record.status} />
+                          </div>
+                          <div className="flex justify-end">
+                            {hasDetails ? (
+                              <button
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  setSelectedRecord(record);
+                                }}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-[#e0dbd3] bg-white px-[14px] py-2 text-[13px] font-normal text-[#1a1a1a]"
+                              >
+                                View details →
+                              </button>
+                            ) : (
+                              <span className="text-[13px] text-[#8f8f8f]">No action</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          </main>
         </div>
-      </main>
+      </div>
 
       {selectedRecord && (
         <DetailModal record={selectedRecord} onClose={() => setSelectedRecord(null)} />
