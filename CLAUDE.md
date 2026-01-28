@@ -21,7 +21,7 @@ No linting, testing, or formatting tools are configured.
 
 - **React 19** with Vite 7 and `@vitejs/plugin-react`
 - **Tailwind CSS 4** via PostCSS (configured in `postcss.config.js` and `tailwind.config.js`)
-- **@tabler/icons-react** for icons
+- **@hugeicons/react** with `@hugeicons/core-free-icons` for icons
 - All styling uses Tailwind utility classes inline in JSX
 - Custom animations (`fadeIn`, `typingBounce`) defined in `tailwind.config.js`
 

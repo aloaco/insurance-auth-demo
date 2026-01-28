@@ -1,21 +1,25 @@
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  IconAlertTriangle,
-  IconArchive,
-  IconChartBar,
-  IconChevronDown,
-  IconChevronUp,
-  IconClock,
-  IconFileText,
-  IconLayoutDashboard,
-  IconMenu2,
-  IconPhone,
-  IconPlug,
-  IconSettings,
-  IconShieldCheck,
-  IconX,
-  IconUser,
-  IconUsers
-} from '@tabler/icons-react';
+  Alert01Icon,
+  Archive01Icon,
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  BarChartIcon,
+  Cancel01Icon,
+  ChartDownIcon,
+  ChartUpIcon,
+  Clock01Icon,
+  DashboardSquare01Icon,
+  File01Icon,
+  Menu02Icon,
+  PhoneCheckIcon,
+  Plug01Icon,
+  Setting06Icon,
+  Shield01Icon,
+  Tick01Icon,
+  UserGroupIcon,
+  UserIcon
+} from '@hugeicons/core-free-icons';
 import { useState } from 'react';
 import StatusBadge from '../components/StatusBadge';
 
@@ -27,37 +31,37 @@ const STATUS_ORDER = {
 };
 
 const SIDEBAR_PRIMARY_ITEMS = [
-  { label: 'Dashboard', icon: IconLayoutDashboard, isActive: true },
-  { label: 'Patients', icon: IconUser },
-  { label: 'Team', icon: IconUsers },
-  { label: 'Analytics', icon: IconChartBar },
-  { label: 'Integrations', icon: IconPlug },
-  { label: 'Archive', icon: IconArchive }
+  { label: 'Dashboard', icon: DashboardSquare01Icon, isActive: true },
+  { label: 'Patients', icon: UserIcon },
+  { label: 'Team', icon: UserGroupIcon },
+  { label: 'Analytics', icon: BarChartIcon },
+  { label: 'Integrations', icon: Plug01Icon },
+  { label: 'Archive', icon: Archive01Icon }
 ];
 
-const SIDEBAR_FOOTER_ITEMS = [{ label: 'Settings', icon: IconSettings }];
+const SIDEBAR_FOOTER_ITEMS = [{ label: 'Settings', icon: Setting06Icon }];
 
 const STAT_CARD_META = [
   {
-    icon: IconAlertTriangle,
-    trendValue: '+2',
+    icon: Alert01Icon,
+    trendValue: '+2%',
     trendDirection: 'up',
     trendTone: 'negative'
   },
   {
-    icon: IconClock,
-    trendValue: '-3',
+    icon: Clock01Icon,
+    trendValue: '-3%',
     trendDirection: 'down',
     trendTone: 'positive'
   },
   {
-    icon: IconFileText,
-    trendValue: '+2',
+    icon: File01Icon,
+    trendValue: '+2%',
     trendDirection: 'up',
     trendTone: 'positive'
   },
   {
-    icon: IconShieldCheck,
+    icon: Shield01Icon,
     trendValue: '-10%',
     trendDirection: 'down',
     trendTone: 'negative'
@@ -128,7 +132,13 @@ function DetailModal({ record, onClose }) {
               onClick={onClose}
               className="flex h-[34px] w-[34px] items-center justify-center rounded-full border border-[#ebe7e1] bg-white text-[20px] text-[#5f5f5f]"
             >
-              ×
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                size={18}
+                strokeWidth={1.8}
+                color="currentColor"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
@@ -180,9 +190,19 @@ function DetailModal({ record, onClose }) {
                 >
                   <span className="inline-flex items-center gap-2">
                     {showChecklist ? (
-                      <IconChevronUp size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={ArrowUp01Icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     ) : (
-                      <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={ArrowDown01Icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     )}
                     {showChecklist ? 'Hide checklist' : 'View checklist'}
                   </span>
@@ -222,9 +242,19 @@ function DetailModal({ record, onClose }) {
                 >
                   <span className="inline-flex items-center gap-2">
                     {showDisputeScript ? (
-                      <IconChevronUp size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={ArrowUp01Icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     ) : (
-                      <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={ArrowDown01Icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     )}
                     {showDisputeScript ? 'Hide script' : 'View script'}
                   </span>
@@ -240,7 +270,12 @@ function DetailModal({ record, onClose }) {
                       href={`tel:${record.denial.phoneNumber}`}
                       className="inline-flex items-center gap-2 text-[14px] font-normal text-[#1a1a1a]"
                     >
-                      <IconPhone size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={PhoneCheckIcon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                       {record.denial.phoneNumber}
                     </a>
                   </div>
@@ -321,9 +356,19 @@ function DetailModal({ record, onClose }) {
                 >
                   <span className="inline-flex items-center gap-2">
                     {showPeerTalkingPoints ? (
-                      <IconChevronUp size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={ArrowUp01Icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     ) : (
-                      <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                      <HugeiconsIcon
+                        icon={ArrowDown01Icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     )}
                     {showPeerTalkingPoints ? 'Hide points' : 'View points'}
                   </span>
@@ -337,7 +382,13 @@ function DetailModal({ record, onClose }) {
                       className="flex items-start gap-3 rounded-xl border border-[#ebe7e1] bg-white px-4 py-[14px]"
                     >
                       <span className="flex h-[22px] min-w-[22px] items-center justify-center rounded-full border border-[#d6f0dd] bg-white text-[12px] font-normal text-[#2f6b3c]">
-                        ✓
+                        <HugeiconsIcon
+                          icon={Tick01Icon}
+                          size={12}
+                          strokeWidth={2}
+                          color="currentColor"
+                          aria-hidden="true"
+                        />
                       </span>
                       <span className="text-[14px] leading-[1.5] text-[#1a1a1a]">
                         {point}
@@ -378,22 +429,21 @@ export default function DashboardView({
   const isClassic = variant === 'classic';
   const useLegacyStats = statCardStyle === 'legacy';
   const doubleBorderOuterClassName = isClassic
-    ? 'rounded-xl border border-[#e5e7eb] bg-[#fafafa] p-[5px] shadow-[0_6px_16px_rgba(15,23,42,0.08)]'
+    ? 'rounded-[18px] border border-[#e5e7eb] bg-[#fafafa] p-[6px] shadow-[0_4px_10px_rgba(15,23,42,0.05)]'
     : '';
   const statCardClassName = isClassic
-    ? 'rounded-lg border border-[#e5e7eb] bg-white px-5 py-4'
+    ? 'h-full rounded-xl border border-[#e5e7eb] bg-white px-5 py-4'
     : useLegacyStats
       ? 'rounded-xl bg-white px-5 py-4 shadow-[0_1px_0_rgba(15,23,42,0.04),_0_12px_30px_rgba(15,23,42,0.08)]'
       : 'rounded-xl border border-[#edf0f2] bg-white px-5 py-4 shadow-[0_10px_25px_rgba(15,23,42,0.05)]';
   const statLabelClassName =
     'text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]';
-  const statInnerCardClassName = isClassic
-    ? 'mt-3 grid grid-cols-[4fr_1fr] items-center rounded-[12px] border border-[#edf0f2] bg-[#f9fafb] px-3 py-2.5'
-    : 'mt-3 grid grid-cols-[4fr_1fr] items-center rounded-[12px] border border-[#eef1f4] bg-[#f9fafb] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]';
-  const statIconWrapperClassName =
-    'flex h-8 w-8 items-center justify-center';
+  const statSubtitleClassName =
+    'mt-4 text-[12px] leading-snug text-[#8f8f8f] truncate';
+  const statTrendLineClassName =
+    'mt-4 flex items-center gap-2 text-[14px] font-semibold text-[#111827]';
   const tableContainerClassName = isClassic
-    ? 'overflow-hidden rounded-lg border border-[#e5e7eb] bg-white'
+    ? 'overflow-hidden rounded-xl border border-[#e5e7eb] bg-white'
     : 'overflow-hidden rounded-xl bg-white shadow-[0_1px_0_rgba(15,23,42,0.04),_0_12px_30px_rgba(15,23,42,0.08)]';
   const tableHeaderClassName = isClassic
     ? 'flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]'
@@ -409,112 +459,6 @@ export default function DashboardView({
     }
     return `${base} ${hasDetails ? 'cursor-pointer hover:bg-[#f8fafc]' : 'cursor-default'}`;
   };
-  const renderStatCard = (key, content) => {
-    if (!isClassic) {
-      return (
-        <div key={key} className={statCardClassName}>
-          {content}
-        </div>
-      );
-    }
-
-    return (
-      <div key={key} className={doubleBorderOuterClassName}>
-        <div className={statCardClassName}>{content}</div>
-      </div>
-    );
-  };
-  const tableContent = (
-    <div id="recent-requests" className={tableContainerClassName}>
-      <div className={tableHeaderClassName}>
-        <div>
-          <h2 className="text-[15px] font-normal text-[#1a1a1a]">
-            Recent Requests
-          </h2>
-          <p className="mt-1 text-[13px] text-[#8f8f8f]">
-            {authRecords.length} total requests
-          </p>
-        </div>
-        <span className={tableUpdatedClassName}>Last updated today</span>
-      </div>
-      {isClassic && (
-        <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
-          <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
-            <span>Patient</span>
-            <span>Procedure</span>
-            <span className="text-left">Status</span>
-            <span className="text-right">Action</span>
-          </div>
-        </div>
-      )}
-      <div>
-        {sortedRecords.map((record) => {
-          const hasDetails =
-            (record.status === 'Denied' && record.denial) ||
-            (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
-
-          return (
-            <div
-              key={record.id}
-              onClick={() => hasDetails && setSelectedRecord(record)}
-              className={getRowClassName(hasDetails)}
-            >
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-[#e5e7eb] bg-[#f3f4f6]">
-                  {record.avatar ? (
-                    <img
-                      src={record.avatar}
-                      alt={`${record.patientName} avatar`}
-                      className="h-full w-full object-cover object-center"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-[12px] font-semibold text-[#6b7280]">
-                      {getInitials(record.patientName)}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="text-[14px] font-normal text-[#1a1a1a]">
-                    {record.patientName}
-                  </p>
-                  <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                    Updated {record.lastUpdated}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <p className="text-[14px] font-normal text-[#1a1a1a]">
-                  {record.procedure}
-                </p>
-                <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                  {record.insurance}
-                </p>
-              </div>
-              <div>
-                <StatusBadge status={record.status} />
-              </div>
-              <div className="flex justify-end">
-                {hasDetails ? (
-                  <button
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setSelectedRecord(record);
-                    }}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#e0dbd3] bg-white px-[14px] py-2 text-[13px] font-normal text-[#1a1a1a]"
-                  >
-                    View details →
-                  </button>
-                ) : (
-                  <span className="text-[13px] text-[#8f8f8f]">No action</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans">
@@ -549,11 +493,11 @@ export default function DashboardView({
                   tabIndex={isActive ? 0 : -1}
                   title={item.label}
                   className={`flex h-11 items-center rounded-[14px] transition ${sidebarButtonLayout} ${isActive
-                    ? 'cursor-pointer bg-[#111111] text-white shadow-[0_10px_22px_rgba(17,17,17,0.18)]'
+                    ? 'cursor-pointer bg-[#111111] text-white shadow-[0_6px_14px_rgba(17,17,17,0.12)]'
                     : 'cursor-default text-[#8f8f8f]'
                     }`}
                 >
-                  <Icon size={20} stroke={1.8} />
+                  <HugeiconsIcon icon={Icon} size={20} strokeWidth={1.8} />
                   {isSidebarExpanded && (
                     <span
                       className={`text-[13px] font-normal ${isActive ? 'text-white' : 'text-[#6b7280]'
@@ -579,7 +523,7 @@ export default function DashboardView({
                   title={item.label}
                   className={`flex h-11 cursor-default items-center rounded-[14px] text-[#8f8f8f] ${sidebarButtonLayout}`}
                 >
-                  <Icon size={20} stroke={1.8} />
+                  <HugeiconsIcon icon={Icon} size={20} strokeWidth={1.8} />
                   {isSidebarExpanded && (
                     <span className="text-[13px] font-normal text-[#6b7280]">
                       {item.label}
@@ -607,7 +551,7 @@ export default function DashboardView({
                       : 'scale-100 rotate-0 opacity-100'
                       }`}
                   >
-                    <IconMenu2 size={18} stroke={1.8} />
+                    <HugeiconsIcon icon={Menu02Icon} size={18} strokeWidth={1.8} />
                   </span>
                   <span
                     className={`absolute transition-all duration-300 ${isSidebarExpanded
@@ -615,7 +559,7 @@ export default function DashboardView({
                       : 'scale-90 -rotate-90 opacity-0'
                       }`}
                   >
-                    <IconX size={18} stroke={1.8} />
+                    <HugeiconsIcon icon={Cancel01Icon} size={18} strokeWidth={1.8} />
                   </span>
                 </button>
                 <h1 className="text-[18px] font-normal text-[#1a1a1a]">Dashboard</h1>
@@ -639,73 +583,193 @@ export default function DashboardView({
               <div className="flex flex-col gap-6">
                 <div className="grid grid-cols-4 gap-4">
                   {dashboardStats.map((stat, index) => {
+                    const meta = STAT_CARD_META[index] || {};
+                    const TrendIcon =
+                      meta.trendDirection === 'down' ? ChartDownIcon : ChartUpIcon;
+                    const trendChip = meta.trendValue ? (
+                      <span
+                        className={`inline-flex shrink-0 items-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-2 py-1 text-[11px] font-semibold text-[#111827]`}
+                      >
+                        <HugeiconsIcon
+                          icon={TrendIcon}
+                          size={12}
+                          strokeWidth={2}
+                          className="text-[#111827]"
+                          aria-hidden="true"
+                        />
+                        {meta.trendValue}
+                      </span>
+                    ) : null;
+                    const valueClassName = stat.valueClassName || 'text-[#111827]';
+
                     if (useLegacyStats) {
                       const cardContent = (
                         <>
-                          <div className="mb-2">
+                          <div className="flex items-center justify-between gap-3">
                             <p className={statLabelClassName}>{stat.label}</p>
+                            {trendChip}
                           </div>
-                          <p
-                            className={`mb-[6px] text-[34px] font-semibold leading-none ${stat.valueClassName}`}
-                          >
-                            {stat.value}
-                            <span className="text-[20px] font-normal">
-                              {stat.suffix || ''}
-                            </span>
-                          </p>
+                          <div className="mb-4 mt-1">
+                            <div className="flex items-baseline gap-1.5">
+                              <span
+                                className={`text-[24px] font-semibold leading-none tracking-tight ${valueClassName}`}
+                              >
+                                {stat.value}
+                              </span>
+                              {stat.suffix && (
+                                <span className="text-[18px] font-medium text-[#6b7280]">
+                                  {stat.suffix}
+                                </span>
+                              )}
+                            </div>
+                            {stat.subtitle && (
+                              <p className={statSubtitleClassName}>{stat.subtitle}</p>
+                            )}
+                          </div>
                         </>
                       );
-                      return renderStatCard(stat.label, cardContent);
+                      return (
+                        <div
+                          key={stat.label}
+                          className={isClassic ? doubleBorderOuterClassName : statCardClassName}
+                        >
+                          <div className={isClassic ? statCardClassName : ''}>
+                            {cardContent}
+                          </div>
+                        </div>
+                      );
                     }
-
-                    const meta = STAT_CARD_META[index] || {};
-                    const StatIcon = meta.icon || IconChartBar;
-                    const trendTone = TREND_TONE_STYLES[meta.trendTone] || TREND_TONE_STYLES.positive;
 
                     const cardContent = (
                       <>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-3">
                           <p className={statLabelClassName}>{stat.label}</p>
-                          <span className={statIconWrapperClassName}>
-                            <StatIcon
-                              size={16}
-                              stroke={1.9}
-                              className={stat.valueClassName || 'text-[#9ca3af]'}
-                              aria-hidden="true"
-                            />
-                          </span>
+                          {trendChip}
                         </div>
-                        <div className={statInnerCardClassName}>
+                        <div className="mb-4 mt-1">
                           <div className="flex items-baseline gap-1.5">
-                            <span className="text-[28px] font-semibold leading-none text-[#111827]">
+                            <span
+                              className={`text-[24px] font-semibold leading-none tracking-tight ${valueClassName}`}
+                            >
                               {stat.value}
                             </span>
                             {stat.suffix && (
-                              <span className="text-[14px] font-medium text-[#6b7280]">
+                              <span className="text-[18px] font-medium text-[#6b7280]">
                                 {stat.suffix}
                               </span>
                             )}
                           </div>
-                          {meta.trendValue && (
-                            <div className="flex items-center justify-center border-l border-[#e5e7eb] px-2">
-                              <span className={`text-[12px] font-semibold ${trendTone.text}`}>
-                                {meta.trendValue}
-                              </span>
-                            </div>
+                          {stat.subtitle && (
+                            <p className={statSubtitleClassName}>{stat.subtitle}</p>
                           )}
                         </div>
                       </>
                     );
 
-                    return renderStatCard(stat.label, cardContent);
+                    return (
+                      <div
+                        key={stat.label}
+                        className={isClassic ? doubleBorderOuterClassName : statCardClassName}
+                      >
+                        <div className={isClassic ? statCardClassName : ''}>
+                          {cardContent}
+                        </div>
+                      </div>
+                    );
                   })}
                 </div>
 
-                {isClassic ? (
-                  <div className={doubleBorderOuterClassName}>{tableContent}</div>
-                ) : (
-                  tableContent
-                )}
+                <div className={isClassic ? doubleBorderOuterClassName : ''}>
+                  <div id="recent-requests" className={tableContainerClassName}>
+                    <div className={tableHeaderClassName}>
+                      <div>
+                        <h2 className="text-[15px] font-normal text-[#1a1a1a]">
+                          Recent Requests
+                        </h2>
+                        <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                          {authRecords.length} total requests
+                        </p>
+                      </div>
+                      <span className={tableUpdatedClassName}>Last updated today</span>
+                    </div>
+                    {isClassic && (
+                      <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
+                        <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
+                          <span>Patient</span>
+                          <span>Procedure</span>
+                          <span className="text-left">Status</span>
+                          <span className="text-right">Action</span>
+                        </div>
+                      </div>
+                    )}
+                    <div>
+                      {sortedRecords.map((record) => {
+                        const hasDetails =
+                          (record.status === 'Denied' && record.denial) ||
+                          (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+
+                        return (
+                          <div
+                            key={record.id}
+                            onClick={() => hasDetails && setSelectedRecord(record)}
+                            className={getRowClassName(hasDetails)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-[#e5e7eb] bg-[#f3f4f6]">
+                                {record.avatar ? (
+                                  <img
+                                    src={record.avatar}
+                                    alt={`${record.patientName} avatar`}
+                                    className="h-full w-full object-cover object-center"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center text-[12px] font-semibold text-[#6b7280]">
+                                    {getInitials(record.patientName)}
+                                  </div>
+                                )}
+                              </div>
+                              <div>
+                                <p className="text-[14px] font-normal text-[#1a1a1a]">
+                                  {record.patientName}
+                                </p>
+                                <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                                  Updated {record.lastUpdated}
+                                </p>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-[14px] font-normal text-[#1a1a1a]">
+                                {record.procedure}
+                              </p>
+                              <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                                {record.insurance}
+                              </p>
+                            </div>
+                            <div>
+                              <StatusBadge status={record.status} />
+                            </div>
+                            <div className="flex justify-end">
+                              {hasDetails ? (
+                                <button
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    setSelectedRecord(record);
+                                  }}
+                                  className="inline-flex items-center gap-1.5 rounded-full border border-[#e0dbd3] bg-white px-[14px] py-2 text-[13px] font-normal text-[#1a1a1a]"
+                                >
+                                  View details →
+                                </button>
+                              ) : (
+                                <span className="text-[13px] text-[#8f8f8f]">No action</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </main>

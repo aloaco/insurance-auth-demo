@@ -1,4 +1,11 @@
-import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ArrowDown01Icon,
+  ArrowRight01Icon,
+  Cancel01Icon,
+  File01Icon,
+  Tick01Icon
+} from '@hugeicons/core-free-icons';
 import ChatMessage from '../components/ChatMessage';
 import DocumentSection from '../components/DocumentSection';
 import TypingIndicator from '../components/TypingIndicator';
@@ -80,7 +87,17 @@ export default function NewAuthWizard({
                           : 'bg-[#e5e5e5] text-[#999]'
                       }`}
                   >
-                    {isDone ? '✓' : stepNumber}
+                    {isDone ? (
+                      <HugeiconsIcon
+                        icon={Tick01Icon}
+                        size={14}
+                        strokeWidth={2}
+                        color="white"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      stepNumber
+                    )}
                   </div>
                   <span className="text-[14px] font-normal">{label}</span>
                 </div>
@@ -155,21 +172,13 @@ export default function NewAuthWizard({
                     }`}
                 >
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#666"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="12" y1="18" x2="12" y2="12" />
-                      <line x1="9" y1="15" x2="15" y2="15" />
-                    </svg>
+                    <HugeiconsIcon
+                      icon={File01Icon}
+                      size={24}
+                      strokeWidth={1.8}
+                      color="#666"
+                      aria-hidden="true"
+                    />
                   </div>
                   <p className="mb-1 text-[16px] font-normal text-[#1a1a1a]">
                     {isDragging ? 'Drop file here' : 'Drop files here or click to upload'}
@@ -180,16 +189,13 @@ export default function NewAuthWizard({
               {uploadedFile && (
                 <div className="flex items-center gap-4 rounded-2xl border border-[#bbf7d0] bg-white p-5">
                   <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#bbf7d0] bg-white">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#22c55e"
-                      strokeWidth="2"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                    <HugeiconsIcon
+                      icon={Tick01Icon}
+                      size={20}
+                      strokeWidth={2}
+                      color="#22c55e"
+                      aria-hidden="true"
+                    />
                   </div>
                   <div className="flex-1">
                     <p className="mb-1 text-[15px] font-normal text-[#166534]">
@@ -206,7 +212,13 @@ export default function NewAuthWizard({
                     }}
                     className="p-2 text-[20px] leading-none text-[#22c55e]"
                   >
-                    ×
+                    <HugeiconsIcon
+                      icon={Cancel01Icon}
+                      size={18}
+                      strokeWidth={1.8}
+                      color="currentColor"
+                      aria-hidden="true"
+                    />
                   </button>
                 </div>
               )}
@@ -442,7 +454,13 @@ export default function NewAuthWizard({
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-4 rounded-2xl border border-[#bbf7d0] bg-white px-6 py-5">
               <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#22c55e] bg-white">
-                <span className="text-[18px] font-normal text-[#22c55e]">✓</span>
+                <HugeiconsIcon
+                  icon={Tick01Icon}
+                  size={18}
+                  strokeWidth={2}
+                  color="#22c55e"
+                  aria-hidden="true"
+                />
               </div>
               <div>
                 <p className="text-[16px] font-normal text-[#166534]">Documentation Complete</p>
@@ -542,9 +560,19 @@ export default function NewAuthWizard({
                     {section.expandable && (
                       <span className="inline-flex items-center text-[#666]">
                         {expandedSection === index ? (
-                          <IconChevronDown size={16} stroke={1.8} aria-hidden="true" />
+                          <HugeiconsIcon
+                            icon={ArrowDown01Icon}
+                            size={16}
+                            strokeWidth={1.8}
+                            aria-hidden="true"
+                          />
                         ) : (
-                          <IconChevronRight size={16} stroke={1.8} aria-hidden="true" />
+                          <HugeiconsIcon
+                            icon={ArrowRight01Icon}
+                            size={16}
+                            strokeWidth={1.8}
+                            aria-hidden="true"
+                          />
                         )}
                       </span>
                     )}
@@ -579,7 +607,13 @@ export default function NewAuthWizard({
                               className="mb-3 flex items-start gap-3 rounded-xl bg-white px-4 py-[14px] text-[14px] leading-[1.6] text-[#1a1a1a]"
                             >
                               <span className="flex h-[22px] min-w-[22px] flex-shrink-0 items-center justify-center rounded-full border border-[#bbf7d0] bg-white text-[12px] font-normal text-[#22c55e]">
-                                ✓
+                                <HugeiconsIcon
+                                  icon={Tick01Icon}
+                                  size={12}
+                                  strokeWidth={2}
+                                  color="currentColor"
+                                  aria-hidden="true"
+                                />
                               </span>
                               {point}
                             </li>

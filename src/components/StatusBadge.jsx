@@ -1,30 +1,31 @@
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  IconCircleCheck,
-  IconCircleX,
-  IconClock,
-  IconPhoneCall
-} from '@tabler/icons-react';
+  CancelCircleIcon,
+  CheckmarkCircle01Icon,
+  Clock01Icon,
+  PhoneCheckIcon
+} from '@hugeicons/core-free-icons';
 
 const STATUS_CONFIG = {
   Approved: {
     label: 'Approved',
     textClass: 'text-[#1f6a3a]',
-    Icon: IconCircleCheck
+    Icon: CheckmarkCircle01Icon
   },
   Pending: {
     label: 'Pending',
     textClass: 'text-[#8b5a1f]',
-    Icon: IconClock
+    Icon: Clock01Icon
   },
   'Needs Peer-to-Peer': {
     label: 'Peer-to-Peer',
     textClass: 'text-[#5531c5]',
-    Icon: IconPhoneCall
+    Icon: PhoneCheckIcon
   },
   Denied: {
     label: 'Denied',
     textClass: 'text-[#9b2c2c]',
-    Icon: IconCircleX
+    Icon: CancelCircleIcon
   }
 };
 
@@ -35,7 +36,14 @@ export default function StatusBadge({ status }) {
     <span
       className={`inline-flex items-center gap-2 rounded-full bg-white text-[12px] font-normal tracking-[0.2px] ${textClass}`}
     >
-      {Icon && <Icon size={14} stroke={1.8} aria-hidden="true" />}
+      {Icon && (
+        <HugeiconsIcon
+          icon={Icon}
+          size={14}
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
+      )}
       {label}
     </span>
   );

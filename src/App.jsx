@@ -43,10 +43,6 @@ export default function App() {
   const actionNeededRecords = authRecords.filter(
     (record) => record.status === 'Needs Peer-to-Peer' || record.status === 'Denied'
   );
-  const deniedCount = authRecords.filter((record) => record.status === 'Denied').length;
-  const peerToPeerCount = authRecords.filter(
-    (record) => record.status === 'Needs Peer-to-Peer'
-  ).length;
   const approvedCount = authRecords.filter((record) => record.status === 'Approved').length;
   const pendingCount = authRecords.filter((record) => record.status === 'Pending').length;
   const approvalRate =
@@ -56,26 +52,26 @@ export default function App() {
     {
       label: 'Action Needed',
       value: actionNeededRecords.length,
-      subtitle: `${deniedCount} denied · ${peerToPeerCount} peer review`,
+      subtitle: 'Denied & peer-to-peer calls',
       valueClassName: 'text-[#dc2626]'
     },
     {
       label: 'Pending Review',
       value: pendingCount,
-      subtitle: 'Awaiting insurance response',
+      subtitle: 'Awaiting provider action',
       valueClassName: 'text-[#ca8a04]'
     },
     {
       label: 'Total Requests',
       value: authRecords.length,
-      subtitle: `${approvedCount} approved this period`,
+      subtitle: 'Requests for the last month',
       valueClassName: 'text-[#1a1a1a]'
     },
     {
       label: 'Approval Rate',
       value: approvalRate,
       suffix: '%',
-      subtitle: approvalRate >= 90 ? 'Meeting target rate' : 'Below target rate',
+      subtitle: 'Requests for the last month',
       valueClassName: 'text-[#7c3aed]'
     }
   ];

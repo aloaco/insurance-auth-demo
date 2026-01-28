@@ -1,3 +1,6 @@
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Tick01Icon } from '@hugeicons/core-free-icons';
+
 export default function DocumentSection({
   title,
   content,
@@ -36,7 +39,16 @@ export default function DocumentSection({
       >
         {title}
         {isFilled && (
-          <span className="text-[10px] font-normal text-[#22c55e]">✓ Complete</span>
+          <span className="inline-flex items-center gap-1 text-[10px] font-normal text-[#22c55e]">
+            <HugeiconsIcon
+              icon={Tick01Icon}
+              size={12}
+              strokeWidth={2}
+              color="currentColor"
+              aria-hidden="true"
+            />
+            Complete
+          </span>
         )}
         {isCurrentField && !isFilled && (
           <span className="rounded-full border border-[#7c3aed] bg-white px-2 py-[2px] text-[10px] text-[#7c3aed]">
