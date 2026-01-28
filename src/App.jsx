@@ -264,6 +264,20 @@ export default function App() {
     resetWizard();
   };
 
+  if (currentView === 'dashboard-2') {
+    return (
+      <DashboardView
+        authRecords={authRecords}
+        dashboardStats={dashboardStats}
+        selectedRecord={selectedRecord}
+        setSelectedRecord={setSelectedRecord}
+        startNewAuth={startNewAuth}
+        variant="classic"
+        statCardStyle="modern"
+      />
+    );
+  }
+
   if (currentView === 'dashboard') {
     return (
       <DashboardView
@@ -272,6 +286,7 @@ export default function App() {
         selectedRecord={selectedRecord}
         setSelectedRecord={setSelectedRecord}
         startNewAuth={startNewAuth}
+        statCardStyle="legacy"
       />
     );
   }

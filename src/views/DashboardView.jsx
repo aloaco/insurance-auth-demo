@@ -1,13 +1,17 @@
 import {
+  IconAlertTriangle,
   IconArchive,
   IconChartBar,
   IconChevronDown,
   IconChevronUp,
+  IconClock,
+  IconFileText,
   IconLayoutDashboard,
   IconMenu2,
   IconPhone,
   IconPlug,
   IconSettings,
+  IconShieldCheck,
   IconX,
   IconUser,
   IconUsers
@@ -32,6 +36,46 @@ const SIDEBAR_PRIMARY_ITEMS = [
 ];
 
 const SIDEBAR_FOOTER_ITEMS = [{ label: 'Settings', icon: IconSettings }];
+
+const STAT_CARD_META = [
+  {
+    icon: IconAlertTriangle,
+    trendValue: '+2',
+    trendDirection: 'up',
+    trendTone: 'negative'
+  },
+  {
+    icon: IconClock,
+    trendValue: '-3',
+    trendDirection: 'down',
+    trendTone: 'positive'
+  },
+  {
+    icon: IconFileText,
+    trendValue: '+2',
+    trendDirection: 'up',
+    trendTone: 'positive'
+  },
+  {
+    icon: IconShieldCheck,
+    trendValue: '-10%',
+    trendDirection: 'down',
+    trendTone: 'negative'
+  }
+];
+
+const TREND_TONE_STYLES = {
+  positive: {
+    text: 'text-[#16a34a]',
+    bg: 'bg-[#ecfdf3]',
+    border: 'border-[#bbf7d0]'
+  },
+  negative: {
+    text: 'text-[#e11d48]',
+    bg: 'bg-[#fff1f2]',
+    border: 'border-[#fecdd3]'
+  }
+};
 
 const getInitials = (name = '') =>
   name
@@ -315,7 +359,9 @@ export default function DashboardView({
   dashboardStats,
   selectedRecord,
   setSelectedRecord,
-  startNewAuth
+  startNewAuth,
+  variant = 'refined',
+  statCardStyle = 'modern'
 }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const sortedRecords = [...authRecords].sort((a, b) => {
@@ -329,6 +375,146 @@ export default function DashboardView({
     ? 'w-full justify-start gap-3 px-4'
     : 'w-10 justify-center';
   const sidebarTransition = isSidebarExpanded ? 'duration-300' : 'duration-400';
+  const isClassic = variant === 'classic';
+  const useLegacyStats = statCardStyle === 'legacy';
+  const doubleBorderOuterClassName = isClassic
+    ? 'rounded-xl border border-[#e5e7eb] bg-[#fafafa] p-[5px] shadow-[0_6px_16px_rgba(15,23,42,0.08)]'
+    : '';
+  const statCardClassName = isClassic
+    ? 'rounded-lg border border-[#e5e7eb] bg-white px-5 py-4'
+    : useLegacyStats
+      ? 'rounded-xl bg-white px-5 py-4 shadow-[0_1px_0_rgba(15,23,42,0.04),_0_12px_30px_rgba(15,23,42,0.08)]'
+      : 'rounded-xl border border-[#edf0f2] bg-white px-5 py-4 shadow-[0_10px_25px_rgba(15,23,42,0.05)]';
+  const statLabelClassName =
+    'text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]';
+  const statInnerCardClassName = isClassic
+    ? 'mt-3 grid grid-cols-[4fr_1fr] items-center rounded-[12px] border border-[#edf0f2] bg-[#f9fafb] px-3 py-2.5'
+    : 'mt-3 grid grid-cols-[4fr_1fr] items-center rounded-[12px] border border-[#eef1f4] bg-[#f9fafb] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]';
+  const statIconWrapperClassName =
+    'flex h-8 w-8 items-center justify-center';
+  const tableContainerClassName = isClassic
+    ? 'overflow-hidden rounded-lg border border-[#e5e7eb] bg-white'
+    : 'overflow-hidden rounded-xl bg-white shadow-[0_1px_0_rgba(15,23,42,0.04),_0_12px_30px_rgba(15,23,42,0.08)]';
+  const tableHeaderClassName = isClassic
+    ? 'flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]'
+    : 'flex items-center justify-between gap-4 bg-white px-6 py-[18px]';
+  const tableUpdatedClassName = isClassic
+    ? 'text-[13px] text-[#5f5f5f]'
+    : 'self-start text-[13px] text-[#8f8f8f]';
+  const getRowClassName = (hasDetails) => {
+    const base =
+      'grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 px-6 py-[18px] transition-colors';
+    if (isClassic) {
+      return `${base} border-b border-[#e5e7eb] last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`;
+    }
+    return `${base} ${hasDetails ? 'cursor-pointer hover:bg-[#f8fafc]' : 'cursor-default'}`;
+  };
+  const renderStatCard = (key, content) => {
+    if (!isClassic) {
+      return (
+        <div key={key} className={statCardClassName}>
+          {content}
+        </div>
+      );
+    }
+
+    return (
+      <div key={key} className={doubleBorderOuterClassName}>
+        <div className={statCardClassName}>{content}</div>
+      </div>
+    );
+  };
+  const tableContent = (
+    <div id="recent-requests" className={tableContainerClassName}>
+      <div className={tableHeaderClassName}>
+        <div>
+          <h2 className="text-[15px] font-normal text-[#1a1a1a]">
+            Recent Requests
+          </h2>
+          <p className="mt-1 text-[13px] text-[#8f8f8f]">
+            {authRecords.length} total requests
+          </p>
+        </div>
+        <span className={tableUpdatedClassName}>Last updated today</span>
+      </div>
+      {isClassic && (
+        <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
+          <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
+            <span>Patient</span>
+            <span>Procedure</span>
+            <span className="text-left">Status</span>
+            <span className="text-right">Action</span>
+          </div>
+        </div>
+      )}
+      <div>
+        {sortedRecords.map((record) => {
+          const hasDetails =
+            (record.status === 'Denied' && record.denial) ||
+            (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+
+          return (
+            <div
+              key={record.id}
+              onClick={() => hasDetails && setSelectedRecord(record)}
+              className={getRowClassName(hasDetails)}
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-[#e5e7eb] bg-[#f3f4f6]">
+                  {record.avatar ? (
+                    <img
+                      src={record.avatar}
+                      alt={`${record.patientName} avatar`}
+                      className="h-full w-full object-cover object-center"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-[12px] font-semibold text-[#6b7280]">
+                      {getInitials(record.patientName)}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[14px] font-normal text-[#1a1a1a]">
+                    {record.patientName}
+                  </p>
+                  <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                    Updated {record.lastUpdated}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <p className="text-[14px] font-normal text-[#1a1a1a]">
+                  {record.procedure}
+                </p>
+                <p className="mt-1 text-[13px] text-[#8f8f8f]">
+                  {record.insurance}
+                </p>
+              </div>
+              <div>
+                <StatusBadge status={record.status} />
+              </div>
+              <div className="flex justify-end">
+                {hasDetails ? (
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setSelectedRecord(record);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#e0dbd3] bg-white px-[14px] py-2 text-[13px] font-normal text-[#1a1a1a]"
+                  >
+                    View details →
+                  </button>
+                ) : (
+                  <span className="text-[13px] text-[#8f8f8f]">No action</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans">
@@ -452,118 +638,74 @@ export default function DashboardView({
             <div className="mx-auto max-w-[1200px] px-8 py-8">
               <div className="flex flex-col gap-6">
                 <div className="grid grid-cols-4 gap-4">
-                  {dashboardStats.map((stat) => (
-                    <div
-                      key={stat.label}
-                      className="rounded-xl border border-[#e5e7eb] bg-white px-5 py-[18px]"
-                    >
-                      <div className="mb-2">
-                        <p className="text-[11px] font-normal text-[#6b7280]">
-                          {stat.label}
-                        </p>
-                      </div>
-                      <p
-                        className={`mb-[6px] text-[34px] font-semibold leading-none ${stat.valueClassName}`}
-                      >
-                        {stat.value}
-                        <span className="text-[20px] font-normal">{stat.suffix || ''}</span>
-                      </p>
-                      <p className="text-[11px] text-[#6b7280]">{stat.subtitle}</p>
-                    </div>
-                  ))}
-                </div>
+                  {dashboardStats.map((stat, index) => {
+                    if (useLegacyStats) {
+                      const cardContent = (
+                        <>
+                          <div className="mb-2">
+                            <p className={statLabelClassName}>{stat.label}</p>
+                          </div>
+                          <p
+                            className={`mb-[6px] text-[34px] font-semibold leading-none ${stat.valueClassName}`}
+                          >
+                            {stat.value}
+                            <span className="text-[20px] font-normal">
+                              {stat.suffix || ''}
+                            </span>
+                          </p>
+                        </>
+                      );
+                      return renderStatCard(stat.label, cardContent);
+                    }
 
-                <div
-                  id="recent-requests"
-                  className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white"
-                >
-                  <div className="flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]">
-                    <div>
-                      <h2 className="text-[15px] font-normal text-[#1a1a1a]">
-                        Recent Requests
-                      </h2>
-                      <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                        {authRecords.length} total requests
-                      </p>
-                    </div>
-                    <span className="text-[13px] text-[#5f5f5f]">Last updated today</span>
-                  </div>
-                  <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
-                    <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
-                      <span>Patient</span>
-                      <span>Procedure</span>
-                      <span className="text-left">Status</span>
-                      <span className="text-right">Action</span>
-                    </div>
-                  </div>
-                  <div>
-                    {sortedRecords.map((record) => {
-                      const hasDetails =
-                        (record.status === 'Denied' && record.denial) ||
-                        (record.status === 'Needs Peer-to-Peer' && record.peerToPeer);
+                    const meta = STAT_CARD_META[index] || {};
+                    const StatIcon = meta.icon || IconChartBar;
+                    const trendTone = TREND_TONE_STYLES[meta.trendTone] || TREND_TONE_STYLES.positive;
 
-                      return (
-                        <div
-                          key={record.id}
-                          onClick={() => hasDetails && setSelectedRecord(record)}
-                          className={`grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 border-b border-[#e5e7eb] px-6 py-[18px] transition-colors last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'
-                            }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-[#e5e7eb] bg-[#f3f4f6]">
-                              {record.avatar ? (
-                                <img
-                                  src={record.avatar}
-                                  alt={`${record.patientName} avatar`}
-                                  className="h-full w-full object-cover object-center"
-                                  loading="lazy"
-                                />
-                              ) : (
-                                <div className="flex h-full w-full items-center justify-center text-[12px] font-semibold text-[#6b7280]">
-                                  {getInitials(record.patientName)}
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <p className="text-[14px] font-normal text-[#1a1a1a]">
-                                {record.patientName}
-                              </p>
-                              <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                                Updated {record.lastUpdated}
-                              </p>
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-[14px] font-normal text-[#1a1a1a]">
-                              {record.procedure}
-                            </p>
-                            <p className="mt-1 text-[13px] text-[#8f8f8f]">
-                              {record.insurance}
-                            </p>
-                          </div>
-                          <div>
-                            <StatusBadge status={record.status} />
-                          </div>
-                          <div className="flex justify-end">
-                            {hasDetails ? (
-                              <button
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  setSelectedRecord(record);
-                                }}
-                                className="inline-flex items-center gap-1.5 rounded-full border border-[#e0dbd3] bg-white px-[14px] py-2 text-[13px] font-normal text-[#1a1a1a]"
-                              >
-                                View details →
-                              </button>
-                            ) : (
-                              <span className="text-[13px] text-[#8f8f8f]">No action</span>
+                    const cardContent = (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <p className={statLabelClassName}>{stat.label}</p>
+                          <span className={statIconWrapperClassName}>
+                            <StatIcon
+                              size={16}
+                              stroke={1.9}
+                              className={stat.valueClassName || 'text-[#9ca3af]'}
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </div>
+                        <div className={statInnerCardClassName}>
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-[28px] font-semibold leading-none text-[#111827]">
+                              {stat.value}
+                            </span>
+                            {stat.suffix && (
+                              <span className="text-[14px] font-medium text-[#6b7280]">
+                                {stat.suffix}
+                              </span>
                             )}
                           </div>
+                          {meta.trendValue && (
+                            <div className="flex items-center justify-center border-l border-[#e5e7eb] px-2">
+                              <span className={`text-[12px] font-semibold ${trendTone.text}`}>
+                                {meta.trendValue}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      );
-                    })}
-                  </div>
+                      </>
+                    );
+
+                    return renderStatCard(stat.label, cardContent);
+                  })}
                 </div>
+
+                {isClassic ? (
+                  <div className={doubleBorderOuterClassName}>{tableContent}</div>
+                ) : (
+                  tableContent
+                )}
               </div>
             </div>
           </main>
