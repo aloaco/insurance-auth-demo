@@ -58,52 +58,54 @@ export default function NewAuthWizard({
       className={`flex min-h-screen flex-col bg-[#fafafa] ${isSplitView ? 'h-screen overflow-hidden' : ''
         }`}
     >
-      <div className="bg-[#fafafa] px-8 py-5">
-        <div className="mx-auto max-w-[600px]">
-          <div className="mb-5 flex justify-start">
-            <button
-              onClick={() => setCurrentView('dashboard')}
-              className="rounded-full border border-[#e5e5e5] bg-white px-5 py-[10px] text-[13px] font-normal text-[#666]"
-            >
-              Back to Dashboard
-            </button>
-          </div>
-          <div className="mb-3 flex items-center justify-between">
-            {STEPS.map((label, index) => {
-              const stepNumber = index + 1;
-              const isActive = step === stepNumber;
-              const isDone = step > stepNumber;
-              return (
-                <div
-                  key={label}
-                  className={`flex items-center gap-2 ${isDone ? 'text-[#22c55e]' : isActive ? 'text-[#1a1a1a]' : 'text-[#ccc]'
-                    }`}
-                >
+      <div className="bg-[#fafafa] px-8 py-4">
+        <div className="relative mb-2 mt-3 min-h-[42px]">
+          <button
+            onClick={() => setCurrentView('dashboard')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full border border-[#e5e5e5] bg-white px-5 py-[10px] text-[13px] font-normal text-[#666]"
+          >
+            Back to Dashboard
+          </button>
+          <div className="mx-auto max-w-[600px]">
+            <div className="flex items-center justify-between">
+              {STEPS.map((label, index) => {
+                const stepNumber = index + 1;
+                const isActive = step === stepNumber;
+                const isDone = step > stepNumber;
+                return (
                   <div
-                    className={`flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-normal ${isDone
-                        ? 'bg-[#22c55e] text-white'
-                        : isActive
-                          ? 'bg-[#1a1a1a] text-white'
-                          : 'bg-[#e5e5e5] text-[#999]'
+                    key={label}
+                    className={`flex items-center gap-2 ${isDone ? 'text-[#22c55e]' : isActive ? 'text-[#1a1a1a]' : 'text-[#ccc]'
                       }`}
                   >
-                    {isDone ? (
-                      <HugeiconsIcon
-                        icon={Tick01Icon}
-                        size={14}
-                        strokeWidth={2}
-                        color="white"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      stepNumber
-                    )}
+                    <div
+                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-normal ${isDone
+                          ? 'bg-[#22c55e] text-white'
+                          : isActive
+                            ? 'bg-[#1a1a1a] text-white'
+                            : 'bg-[#e5e5e5] text-[#999]'
+                        }`}
+                    >
+                      {isDone ? (
+                        <HugeiconsIcon
+                          icon={Tick01Icon}
+                          size={14}
+                          strokeWidth={2}
+                          color="white"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        stepNumber
+                      )}
+                    </div>
+                    <span className="text-[14px] font-normal">{label}</span>
                   </div>
-                  <span className="text-[14px] font-normal">{label}</span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+        </div>
+        <div className="mx-auto max-w-[600px]">
           <div className="h-1 overflow-hidden rounded-full bg-[#e5e5e5]">
             <div
               className="h-full rounded-full bg-[#1a1a1a] transition-[width] duration-300"

@@ -44,42 +44,29 @@ const SIDEBAR_FOOTER_ITEMS = [{ label: 'Settings', icon: Setting06Icon }];
 const STAT_CARD_META = [
   {
     icon: Alert01Icon,
-    trendValue: '+2%',
+    trendValue: '+50%',
     trendDirection: 'up',
     trendTone: 'negative'
   },
   {
     icon: Clock01Icon,
-    trendValue: '-3%',
+    trendValue: '-75%',
     trendDirection: 'down',
     trendTone: 'positive'
   },
   {
     icon: File01Icon,
-    trendValue: '+2%',
+    trendValue: '+25%',
     trendDirection: 'up',
     trendTone: 'positive'
   },
   {
     icon: Shield01Icon,
-    trendValue: '-10%',
+    trendValue: '-15%',
     trendDirection: 'down',
     trendTone: 'negative'
   }
 ];
-
-const TREND_TONE_STYLES = {
-  positive: {
-    text: 'text-[#16a34a]',
-    bg: 'bg-[#ecfdf3]',
-    border: 'border-[#bbf7d0]'
-  },
-  negative: {
-    text: 'text-[#e11d48]',
-    bg: 'bg-[#fff1f2]',
-    border: 'border-[#fecdd3]'
-  }
-};
 
 const getInitials = (name = '') =>
   name
@@ -155,7 +142,7 @@ function DetailModal({ record, onClose }) {
                     Appeal deadline: {nextDayDate}
                   </p>
                 </div>
-                <button className="rounded-full bg-[#111111] px-5 py-[12px] text-[14px] font-normal text-white">
+                <button className="rounded-full bg-[#9b2c2c] px-5 py-[12px] text-[14px] font-normal text-white">
                   Start Resubmission
                 </button>
               </div>
@@ -323,7 +310,7 @@ function DetailModal({ record, onClose }) {
                 </div>
                 <a
                   href={`tel:${record.peerToPeer.phoneNumber}`}
-                  className="rounded-full bg-[#111111] px-5 py-[12px] text-[14px] font-normal text-white"
+                  className="rounded-full bg-[#5531c5] px-5 py-[12px] text-[14px] font-normal text-white"
                 >
                   Join Peer-to-Peer Call
                 </a>
@@ -410,9 +397,7 @@ export default function DashboardView({
   dashboardStats,
   selectedRecord,
   setSelectedRecord,
-  startNewAuth,
-  variant = 'refined',
-  statCardStyle = 'modern'
+  startNewAuth
 }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const sortedRecords = [...authRecords].sort((a, b) => {
@@ -426,38 +411,23 @@ export default function DashboardView({
     ? 'w-full justify-start gap-3 px-4'
     : 'w-10 justify-center';
   const sidebarTransition = isSidebarExpanded ? 'duration-300' : 'duration-400';
-  const isClassic = variant === 'classic';
-  const useLegacyStats = statCardStyle === 'legacy';
-  const doubleBorderOuterClassName = isClassic
-    ? 'rounded-[18px] border border-[#e5e7eb] bg-[#fafafa] p-[6px] shadow-[0_4px_10px_rgba(15,23,42,0.05)]'
-    : '';
-  const statCardClassName = isClassic
-    ? 'h-full rounded-xl border border-[#e5e7eb] bg-white px-5 py-4'
-    : useLegacyStats
-      ? 'rounded-xl bg-white px-5 py-4 shadow-[0_1px_0_rgba(15,23,42,0.04),_0_12px_30px_rgba(15,23,42,0.08)]'
-      : 'rounded-xl border border-[#edf0f2] bg-white px-5 py-4 shadow-[0_10px_25px_rgba(15,23,42,0.05)]';
+  const doubleBorderOuterClassName =
+    'rounded-[18px] border border-[#e5e7eb] bg-[#fafafa] p-[6px] shadow-[0_4px_10px_rgba(15,23,42,0.05)]';
+  const statCardClassName =
+    'h-full rounded-xl border border-[#e5e7eb] bg-white px-5 py-4';
   const statLabelClassName =
     'text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]';
   const statSubtitleClassName =
     'mt-4 text-[12px] leading-snug text-[#8f8f8f] truncate';
-  const statTrendLineClassName =
-    'mt-4 flex items-center gap-2 text-[14px] font-semibold text-[#111827]';
-  const tableContainerClassName = isClassic
-    ? 'overflow-hidden rounded-xl border border-[#e5e7eb] bg-white'
-    : 'overflow-hidden rounded-xl bg-white shadow-[0_1px_0_rgba(15,23,42,0.04),_0_12px_30px_rgba(15,23,42,0.08)]';
-  const tableHeaderClassName = isClassic
-    ? 'flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]'
-    : 'flex items-center justify-between gap-4 bg-white px-6 py-[18px]';
-  const tableUpdatedClassName = isClassic
-    ? 'text-[13px] text-[#5f5f5f]'
-    : 'self-start text-[13px] text-[#8f8f8f]';
+  const tableContainerClassName =
+    'overflow-hidden rounded-xl border border-[#e5e7eb] bg-white';
+  const tableHeaderClassName =
+    'flex items-center justify-between gap-4 border-b border-[#e5e7eb] bg-white px-6 py-[18px]';
+  const tableUpdatedClassName = 'text-[13px] text-[#5f5f5f]';
   const getRowClassName = (hasDetails) => {
     const base =
       'grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] items-center gap-4 px-6 py-[18px] transition-colors';
-    if (isClassic) {
-      return `${base} border-b border-[#e5e7eb] last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`;
-    }
-    return `${base} ${hasDetails ? 'cursor-pointer hover:bg-[#f8fafc]' : 'cursor-default'}`;
+    return `${base} border-b border-[#e5e7eb] last:border-b-0 ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`;
   };
 
   return (
@@ -493,7 +463,7 @@ export default function DashboardView({
                   tabIndex={isActive ? 0 : -1}
                   title={item.label}
                   className={`flex h-11 items-center rounded-[14px] transition ${sidebarButtonLayout} ${isActive
-                    ? 'cursor-pointer bg-[#111111] text-white shadow-[0_6px_14px_rgba(17,17,17,0.12)]'
+                    ? 'cursor-pointer bg-[#2563eb] text-white'
                     : 'cursor-default text-[#8f8f8f]'
                     }`}
                 >
@@ -567,7 +537,7 @@ export default function DashboardView({
               <div className="flex items-center gap-4">
                 <button
                   onClick={startNewAuth}
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#111111] px-[10px] py-2 text-[13px] font-normal text-white shadow-[0_1px_0_rgba(17,17,17,0.04),_0_12px_30px_rgba(17,17,17,0.06)]"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-[10px] py-2 text-[13px] font-normal text-white"
                 >
                   <span>New Authorization</span>
                 </button>
@@ -602,9 +572,9 @@ export default function DashboardView({
                     ) : null;
                     const valueClassName = stat.valueClassName || 'text-[#111827]';
 
-                    if (useLegacyStats) {
-                      const cardContent = (
-                        <>
+                    return (
+                      <div key={stat.label} className={doubleBorderOuterClassName}>
+                        <div className={statCardClassName}>
                           <div className="flex items-center justify-between gap-3">
                             <p className={statLabelClassName}>{stat.label}</p>
                             {trendChip}
@@ -626,60 +596,13 @@ export default function DashboardView({
                               <p className={statSubtitleClassName}>{stat.subtitle}</p>
                             )}
                           </div>
-                        </>
-                      );
-                      return (
-                        <div
-                          key={stat.label}
-                          className={isClassic ? doubleBorderOuterClassName : statCardClassName}
-                        >
-                          <div className={isClassic ? statCardClassName : ''}>
-                            {cardContent}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    const cardContent = (
-                      <>
-                        <div className="flex items-center justify-between gap-3">
-                          <p className={statLabelClassName}>{stat.label}</p>
-                          {trendChip}
-                        </div>
-                        <div className="mb-4 mt-1">
-                          <div className="flex items-baseline gap-1.5">
-                            <span
-                              className={`text-[24px] font-semibold leading-none tracking-tight ${valueClassName}`}
-                            >
-                              {stat.value}
-                            </span>
-                            {stat.suffix && (
-                              <span className="text-[18px] font-medium text-[#6b7280]">
-                                {stat.suffix}
-                              </span>
-                            )}
-                          </div>
-                          {stat.subtitle && (
-                            <p className={statSubtitleClassName}>{stat.subtitle}</p>
-                          )}
-                        </div>
-                      </>
-                    );
-
-                    return (
-                      <div
-                        key={stat.label}
-                        className={isClassic ? doubleBorderOuterClassName : statCardClassName}
-                      >
-                        <div className={isClassic ? statCardClassName : ''}>
-                          {cardContent}
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                <div className={isClassic ? doubleBorderOuterClassName : ''}>
+                <div className={doubleBorderOuterClassName}>
                   <div id="recent-requests" className={tableContainerClassName}>
                     <div className={tableHeaderClassName}>
                       <div>
@@ -692,16 +615,14 @@ export default function DashboardView({
                       </div>
                       <span className={tableUpdatedClassName}>Last updated today</span>
                     </div>
-                    {isClassic && (
-                      <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
-                        <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
-                          <span>Patient</span>
-                          <span>Procedure</span>
-                          <span className="text-left">Status</span>
-                          <span className="text-right">Action</span>
-                        </div>
+                    <div className="border-b border-[#e5e7eb] bg-white px-6 py-[10px]">
+                      <div className="grid grid-cols-[1.4fr_1.5fr_0.8fr_0.9fr] gap-4 text-[11px] uppercase tracking-[0.6px] text-[#8f8f8f]">
+                        <span>Patient</span>
+                        <span>Procedure</span>
+                        <span className="text-left">Status</span>
+                        <span className="text-right">Action</span>
                       </div>
-                    )}
+                    </div>
                     <div>
                       {sortedRecords.map((record) => {
                         const hasDetails =
